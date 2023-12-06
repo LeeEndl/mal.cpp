@@ -15,7 +15,7 @@ size_t write_data(char* data, size_t size, size_t bytes, std::string* outcome) n
 }
 
 /* replace string length data rather std::replace() replacing only char */
-std::string replace(std::string& str, char replace, std::string with) noexcept {
+std::string replace(const std::string& str, char replace, std::string with) noexcept {
 	std::string mstr{};
 	for (const char& c : str)
 		(c == replace) ? mstr += with : mstr += c;
@@ -23,14 +23,14 @@ std::string replace(std::string& str, char replace, std::string with) noexcept {
 }
 
 /*
-* GET a specfic anime via name and store it inside JSON format. 
+* GET a specfic anime via name and store it inside JSON format.
  * support spaces, mis-spelling. however this is not enhanced; wrong result is possible.
 */
-nlohmann::json anime_get_raw(std::string name) noexcept {
+nlohmann::json anime_get_raw(const std::string& name) noexcept {
 	std::string fname{ replace(name, ' ', "%20") };
 	std::unique_ptr<CURL, decltype(&curl_easy_cleanup)> curl(curl_easy_init(), curl_easy_cleanup);
 	std::string data{};
-	curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/{0}/anime?q=\"{1}\"", api_v, fname).c_str());
+	curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/{0}/anime?q=\"{1}\"&limit=1", api_v, fname).c_str());
 	curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &data);
 	if (not std::ifstream{ ".\\cacert.pem" }) {
@@ -72,7 +72,8 @@ public:
 
 	anime(std::string name) noexcept {
 		this->j = anime_get_raw(std::move(name));
-		if (not j["data"].empty()) {
+		if (this->j["type"] == "RateLimitException") rate_limited = true;
+		else if (not j["data"].empty()) {
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
 				this->image.push_back(is_null<std::string>(this->j["data"][0]["images"]["jpg"][size]));
 			this->en_title = is_null<std::string>(this->j["data"][0]["title_english"]);
@@ -97,15 +98,23 @@ public:
 			this->background = is_null<std::string>(this->j["data"][0]["background"]);
 		}
 	}
+	/* return true if rate limited.
+	 * please take this to consideration as all anime information will be null if true.
+	 * being aware of the rules is important! rate limit: 3req/sec
+	*/
+	bool is_ratelimit() const noexcept {
+		return rate_limited;
+	}
 private:
 	nlohmann::json j{};
+	bool rate_limited{};
 };
 
 /* being worked on... */
-class manga { private: };
+class manga {};
 
-					 /* being worked on... */
-class character { private: };
+/* being worked on... */
+class character {};
 
-						 /* being worked on... */
-class profile { private: };
+/* being worked on... */
+class profile {};
