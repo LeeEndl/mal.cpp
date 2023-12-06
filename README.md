@@ -1,6 +1,6 @@
-<div align="center" size="100%">
+<div align="center">
 
-### including:
+### including
 ```C++
 #include <mal/mal.hpp>
 ```
