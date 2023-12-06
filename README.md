@@ -16,7 +16,7 @@ anime ani("one piece");
 
 ...
 
-std::cout << "title: " << ani.title << std::endl;
+std::cout << "title: " << ani.en_title << std::endl;
 ```
 
 <div/>
