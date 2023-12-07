@@ -1,22 +1,27 @@
-<div align="center">
+<div>
 
-### including
+### including 
 ```C++
 #include <mal/mal.hpp>
 ```
 
 ### declaration
 ```C++
-anime ani("one piece");
+auto ani_it = anime_get_raw("one piece", 2);
 ```
 
-### usage
+### usage (e.g. filter out movies)
 ```C++
 #include <iostream>
 
 ...
 
-std::cout << "title: " << ani.en_title << std::endl;
+for (const auto& info : ani_it)
+{
+	  anime ani(info);
+	  if (ani.type == type::t_tv)
+		  std::cout << ani.en_title << std::endl;
+}
 ```
 
 <div/>
