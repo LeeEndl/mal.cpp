@@ -4,8 +4,6 @@
 #include <nlohmann/json.hpp>
 #include <mal/jikan_cert.hpp>
 
-#include <iostream>
-
 constexpr const char* api_v = "v4"; /* API version. */
 
 /* checks if the value is null. */
@@ -101,10 +99,10 @@ size_t write_data(char* data, size_t size, size_t bytes, std::string* outcome) n
 
 /* replace string length data rather std::replace() replacing only char */
 std::string replace(const std::string& str, char replace, std::string with) noexcept {
-	std::string mstr{};
+	std::stringstream mstr{};
 	for (const char& c : str)
-		(c == replace) ? mstr += with : mstr += c;
-	return std::move(mstr);
+		(c == replace) ? mstr << with : mstr << c;
+	return std::move(mstr.str());
 }
 
 /* GET a specific anime via name
@@ -115,21 +113,22 @@ std::string replace(const std::string& str, char replace, std::string with) noex
 */
 void anime_get(const std::string& name, const int& results, anime_callback callback) {
 	std::unique_ptr<CURL, decltype(&curl_easy_cleanup)> curl(curl_easy_init(), curl_easy_cleanup);
-	std::string all_data{};
-	curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/{0}/anime?q=\"{1}\"&limit={2}",
-		api_v, replace(name, ' ', "%20"), results).c_str());
-	curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
-	curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &all_data);
-	if (not std::ifstream{ ".\\cacert.pem" }) {
-		std::cout << "[MAL LOG] installing cacert.pem for accessing https://api.jikan.moe/" << std::endl;
-		install_cert();
-	}
+	if (not std::ifstream{ ".\\cacert.pem" })
+		std::ofstream{ "cacert.pem" } << jikan_cert;
 	curl_easy_setopt(curl.get(), CURLOPT_CAINFO, ".\\cacert.pem");
 	curl_easy_setopt(curl.get(), CURLOPT_CAPATH, ".\\cacert.pem");
-	if (curl_easy_perform(curl.get()) == CURLE_OK) {
-		nlohmann::json j = nlohmann::json::parse(std::move(all_data));
-		for (const auto& data : j["data"])
-			callback(std::move(anime(data)));
+	for (int page = 1; page <= (results + 24) / 25; ++page) {
+		curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/{0}/anime?q=\"{1}\"&limit={2}&page={3}",
+			api_v, replace(name, ' ', "%20"), 25, page).c_str());
+		std::string all_data{};
+		curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &all_data);
+		if (curl_easy_perform(curl.get()) == CURLE_OK) {
+			nlohmann::json j = nlohmann::json::parse(all_data);
+			if (is_null<int>(j["pagination"]["items"]["count"]) == 0) break;
+			for (const auto& data : j["data"])
+				callback(std::move(anime(data)));
+		}
 	}
 }
 

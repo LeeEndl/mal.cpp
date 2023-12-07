@@ -1,5 +1,4 @@
 #include <fstream>
-#include <cstdio>
 
 /* public certificate for https://api.jikan.moe/ we must note the cURL version is universal and is redundant. */
 constexpr const char* jikan_cert = {
