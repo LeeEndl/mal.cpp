@@ -5,7 +5,7 @@
 #include <mal/mal.hpp>
 ```
 
-### declaration
+### declaration (e.g. fetch 2 animes under the title "one piece")
 ```C++
 auto ani_it = anime_get_raw("one piece", 2);
 ```
