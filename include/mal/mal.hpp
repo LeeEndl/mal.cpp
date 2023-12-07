@@ -25,12 +25,16 @@ std::string replace(const std::string& str, char replace, std::string with) noex
 /*
 * GET a specfic anime via name and store it inside JSON format.
  * support spaces, mis-spelling. however this is not enhanced; wrong result is possible.
+ * @param results the number of results. this is useful for getting a whole anime series collection like one piece movies, fate series, ect
+ *   by default the value is 1 meaning it'll only GET the most relevant search based on the name.
+ *   this can also be used as a iterator if you only wanna get movies or tv series or specials,
+ *   this feature is not included however can be implemented manually.
 */
-nlohmann::json anime_get_raw(const std::string& name) noexcept {
+std::vector<nlohmann::json> anime_get_raw(const std::string& name, short results = 1) noexcept {
 	std::string fname{ replace(name, ' ', "%20") };
 	std::unique_ptr<CURL, decltype(&curl_easy_cleanup)> curl(curl_easy_init(), curl_easy_cleanup);
 	std::string data{};
-	curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/{0}/anime?q=\"{1}\"&limit=1", api_v, fname).c_str());
+	curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/{0}/anime?q=\"{1}\"&limit={2}", api_v, fname, results).c_str());
 	curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &data);
 	if (not std::ifstream{ ".\\cacert.pem" }) {
@@ -39,7 +43,13 @@ nlohmann::json anime_get_raw(const std::string& name) noexcept {
 	}
 	curl_easy_setopt(curl.get(), CURLOPT_CAINFO, ".\\cacert.pem");
 	curl_easy_setopt(curl.get(), CURLOPT_CAPATH, ".\\cacert.pem");
-	if (curl_easy_perform(curl.get()) == CURLE_OK) return nlohmann::json::parse(std::move(data));
+	if (curl_easy_perform(curl.get()) == CURLE_OK) {
+		nlohmann::json all_data = nlohmann::json::parse(std::move(data));
+		std::vector<nlohmann::json> j;
+		for (short i = 0; i < results and i < all_data["data"].size(); ++i)
+			j.push_back(all_data["data"][i]);
+		return j;
+	}
 	return {};
 }
 
@@ -70,32 +80,32 @@ public:
 	std::string synopsis{}; /* about the anime. */
 	std::string background{}; /* about the production. */
 
-	anime(std::string name) noexcept {
-		this->j = anime_get_raw(std::move(name));
-		if (this->j["type"] == "RateLimitException") rate_limited = true;
-		else if (not j["data"].empty()) {
+	anime(const nlohmann::json& j) noexcept {
+		this->j = j;
+		if (is_null<std::string>(this->j["type"]) == "RateLimitException") rate_limited = true;
+		else {
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
-				this->image.push_back(is_null<std::string>(this->j["data"][0]["images"]["jpg"][size]));
-			this->en_title = is_null<std::string>(this->j["data"][0]["title_english"]);
-			this->jp_title = is_null<std::string>(this->j["data"][0]["title_japanese"]);
-			this->type = (is_null<std::string>(this->j["data"][0]["type"]) == "Movie") ? type::t_movie : type::t_tv;
-			this->episodes = is_null<short>(this->j["data"][0]["episodes"]);
-			this->airing = is_null<bool>(this->j["data"][0]["airing"]);
+				this->image.push_back(is_null<std::string>(this->j["images"]["jpg"][size]));
+			this->en_title = is_null<std::string>(this->j["title_english"]);
+			this->jp_title = is_null<std::string>(this->j["title_japanese"]);
+			this->type = (is_null<std::string>(this->j["type"]) == "Movie") ? type::t_movie : type::t_tv;
+			this->episodes = is_null<short>(this->j["episodes"]);
+			this->airing = is_null<bool>(this->j["airing"]);
 			{
 				std::unique_ptr<std::tm> tm = std::make_unique<std::tm>();
-				tm->tm_year = is_null<int>(this->j["data"][0]["aired"]["prop"]["from"]["year"]);
-				tm->tm_mon = is_null<int>(this->j["data"][0]["aired"]["prop"]["from"]["month"]) + 1;
-				tm->tm_mday = is_null<int>(this->j["data"][0]["aired"]["prop"]["from"]["day"]);
+				tm->tm_year = is_null<int>(this->j["aired"]["prop"]["from"]["year"]);
+				tm->tm_mon = is_null<int>(this->j["aired"]["prop"]["from"]["month"]) + 1;
+				tm->tm_mday = is_null<int>(this->j["aired"]["prop"]["from"]["day"]);
 				this->released = std::mktime(tm.get());
 			} /* ~tm() */
-			this->duration = is_null<std::string>(this->j["data"][0]["duration"]);
-			this->rating = is_null<std::string>(this->j["data"][0]["rating"]);
-			this->score = is_null<double>(this->j["data"][0]["score"]);
-			this->scored_by = is_null<int>(this->j["data"][0]["scored_by"]);
-			this->rank = is_null<int>(this->j["data"][0]["rank"]);
-			this->popularity = is_null<int>(this->j["data"][0]["popularity"]);
-			this->synopsis = is_null<std::string>(this->j["data"][0]["synopsis"]);
-			this->background = is_null<std::string>(this->j["data"][0]["background"]);
+			this->duration = is_null<std::string>(this->j["duration"]);
+			this->rating = is_null<std::string>(this->j["rating"]);
+			this->score = is_null<double>(this->j["score"]);
+			this->scored_by = is_null<int>(this->j["scored_by"]);
+			this->rank = is_null<int>(this->j["rank"]);
+			this->popularity = is_null<int>(this->j["popularity"]);
+			this->synopsis = is_null<std::string>(this->j["synopsis"]);
+			this->background = is_null<std::string>(this->j["background"]);
 		}
 	}
 	/* return true if rate limited.
