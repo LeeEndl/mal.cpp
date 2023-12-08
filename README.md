@@ -19,7 +19,7 @@ anime_get("one piece", 5, anime_callback([](const anime& anime) {
 getting the anime title(s).
 ```C++
 anime_get("one piece", 5, anime_callback([](const anime& anime) {
-	std::cout << "english title: " << anime.en_title << " japanese title: << anime.jp_title;
+	std::cout << "english title: " << anime.en_title << " japanese title: " << anime.jp_title;
 }));
 ```
 
