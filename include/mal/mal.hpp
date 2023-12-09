@@ -4,8 +4,6 @@
 #include <nlohmann/json.hpp>
 #include <mal/jikan_cert.hpp>
 
-constexpr const char* api_v = "v4"; /* API version. */
-
 /* checks if the value is null. */
 template<typename T> T is_null(nlohmann::json& j) noexcept {
 	if (j.is_null()) return {};
@@ -30,8 +28,9 @@ enum type {
 class anime {
 public:
 	nlohmann::json j{}; /* get specific objects from the API */
+	int mal_id{};
 	std::vector<std::string> image{}; /* the front image on MAL of that anime. enum: image_size */
-	std::string en_title{}; /* English title */
+	std::string title{}; /* recommended title. as some animes only have japanese title. */
 	std::string jp_title{}; /* Japanese title */
 	type type{}; /* anime type. e.g. t_tv = series, t_movie = movie. enum: type */
 	short episodes{}; /* episodes within the anime. seasons wont effect the count, however some animes have multiple titles like AoT. */
@@ -50,9 +49,10 @@ public:
 		this->j = j;
 		if (is_null<std::string>(this->j["type"]) == "RateLimitException") rate_limited = true;
 		else {
+			this->mal_id = is_null<int>(this->j["mal_id"]);
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
 				this->image.push_back(is_null<std::string>(this->j["images"]["jpg"][size]));
-			this->en_title = is_null<std::string>(this->j["title_english"]);
+			this->title = is_null<std::string>(this->j["title"]);
 			this->jp_title = is_null<std::string>(this->j["title_japanese"]);
 			this->type = (is_null<std::string>(this->j["type"]) == "Movie") ? type::t_movie :
 				(is_null<std::string>(this->j["type"]) == "TV") ? type::t_tv :
@@ -89,12 +89,19 @@ private:
 	bool rate_limited{};
 };
 
-using anime_callback = std::function<void(const anime&)>;
-
 /* for CURLOPT_WRITEFUNCTION. this was made by libcurl not me. */
 size_t write_data(char* data, size_t size, size_t bytes, std::string* outcome) noexcept {
 	outcome->append(std::move(data), size * bytes);
 	return size * bytes;
+}
+
+void request(std::function<void(std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>&)> request) noexcept {
+	std::unique_ptr<CURL, decltype(&curl_easy_cleanup)> curl{ curl_easy_init(), curl_easy_cleanup };
+	if (not std::ifstream{ ".\\cacert.pem" })
+		std::ofstream{ "cacert.pem" } << jikan_cert;
+	curl_easy_setopt(curl.get(), CURLOPT_CAINFO, ".\\cacert.pem");
+	curl_easy_setopt(curl.get(), CURLOPT_CAPATH, ".\\cacert.pem");
+	request(curl);
 }
 
 /* replace string length data rather std::replace() replacing only char */
@@ -108,28 +115,24 @@ std::string replace(const std::string& str, char replace, std::string with) noex
 /* GET a specific anime via name
  * support spaces, mis-spelling. however this is not enhanced; wrong result is possible.
  * @param results the number of results. this is useful for getting a whole anime series collection like one piece movies, fate series, ect
- *   by default the value is 1 meaning it'll only GET the most relevant search based on the name.
  * @param callback used to get all results once function is done
 */
-void anime_get(const std::string& name, const int& results, anime_callback callback) {
-	std::unique_ptr<CURL, decltype(&curl_easy_cleanup)> curl(curl_easy_init(), curl_easy_cleanup);
-	if (not std::ifstream{ ".\\cacert.pem" })
-		std::ofstream{ "cacert.pem" } << jikan_cert;
-	curl_easy_setopt(curl.get(), CURLOPT_CAINFO, ".\\cacert.pem");
-	curl_easy_setopt(curl.get(), CURLOPT_CAPATH, ".\\cacert.pem");
-	for (int page = 1; page <= (results + 24) / 25; ++page) {
-		curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/{0}/anime?q=\"{1}\"&limit={2}&page={3}",
-			api_v, replace(name, ' ', "%20"), 25, page).c_str());
-		std::string all_data{};
-		curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
-		curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &all_data);
-		if (curl_easy_perform(curl.get()) == CURLE_OK) {
-			nlohmann::json j = nlohmann::json::parse(all_data);
-			if (is_null<int>(j["pagination"]["items"]["count"]) == 0) break;
-			for (const auto& data : j["data"])
-				callback(std::move(anime(data)));
+void anime_get(const std::string& name, const int& results, std::function<void(const anime&)> callback) noexcept {
+	request([&name, &results, &callback](std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>& curl) {
+		for (int page = 1; page <= (results + 24) / 25; ++page) {
+			curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/v4/anime?q=\"{0}\"&limit={1}&page={2}",
+				replace(name, ' ', "%20"), 25, page).c_str());
+			std::string all_data{};
+			curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
+			curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &all_data);
+			if (curl_easy_perform(curl.get()) == CURLE_OK) {
+				nlohmann::json j = nlohmann::json::parse(all_data);
+				if (is_null<int>(j["pagination"]["items"]["count"]) == 0) break;
+				for (const auto& data : j["data"])
+					callback(std::move(anime(data)));
+			}
 		}
-	}
+		});
 }
 
 /* being worked on... */
