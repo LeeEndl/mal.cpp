@@ -121,12 +121,12 @@ void anime_get(const std::string& name, const int& results, std::function<void(c
 	request([&name, &results, &callback](std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>& curl) {
 		for (int page = 1; page <= (results + 24) / 25; ++page) {
 			curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/v4/anime?q=\"{0}\"&limit={1}&page={2}",
-				replace(name, ' ', "%20"), 25, page).c_str());
-			std::string all_data{};
+				replace(name, ' ', "%20"), (results < 25) ? results : 25, page).c_str());
 			curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
-			curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &all_data);
+			std::unique_ptr<std::string> all_data(new std::string());
+			curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, all_data.get());
 			if (curl_easy_perform(curl.get()) == CURLE_OK) {
-				nlohmann::json j = nlohmann::json::parse(all_data);
+				nlohmann::json j = nlohmann::json::parse(*all_data);
 				if (is_null<int>(j["pagination"]["items"]["count"]) == 0) break;
 				for (const auto& data : j["data"])
 					callback(std::move(anime(data)));
