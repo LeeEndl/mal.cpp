@@ -19,16 +19,8 @@ mal::anime_get("one piece", 5, [](mal::smart_anime anime) {
 getting the anime title(s).
 ```C++
 mal::anime_get("one piece", 5, [](mal::smart_anime anime) {
-	std::cout << "english title: " << anime.en_title << " japanese title: " << anime.jp_title;
+	std::cout << "english title: " << anime->title << " japanese title: " << anime->jp_title;
 });
 ```
-
-Manually navigating anime information using JSON
-```C++
-mal::anime_get("one piece", 5, [](mal::smart_anime anime) {
-	std::cout << "this anime came out in: " << j["year"];
-});
-```
-**NOTE**: used as a last resort. please consider `anime` classes variety of information offered.
 
 <div/>
