@@ -9,7 +9,7 @@
 this function is used to GET anime/s then individually stored in `anime`. this ultimately makes it easier to access.
  
 ```C++
-anime_get("one piece", 5, [](smart_anime anime) {
+mal::anime_get("one piece", 5, [](mal::smart_anime anime) {
 	...
 });
 ```
@@ -18,14 +18,14 @@ anime_get("one piece", 5, [](smart_anime anime) {
 
 getting the anime title(s).
 ```C++
-anime_get("one piece", 5, [](smart_anime anime) {
+mal::anime_get("one piece", 5, [](mal::smart_anime anime) {
 	std::cout << "english title: " << anime.en_title << " japanese title: " << anime.jp_title;
 });
 ```
 
 Manually navigating anime information using JSON
 ```C++
-anime_get("one piece", 5, [](smart_anime anime) {
+mal::anime_get("one piece", 5, [](mal::smart_anime anime) {
 	std::cout << "this anime came out in: " << j["year"];
 });
 ```
