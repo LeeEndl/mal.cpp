@@ -34,8 +34,3 @@ mRGunUHBcnWEvgJBQl9nJEiU0Zsnvgc/ubhPgXRR4Xq37Z0j4r7g1SgEEzwxA57d
 emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 -----END CERTIFICATE-----)"
 };
-
-/* install cacert.pem from run-time data "jikan_cert" */
-void install_cert() {
-	std::ofstream{ "cacert.pem" } << jikan_cert;
-}
