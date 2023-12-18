@@ -9,14 +9,14 @@
 this function is used to GET anime/s then individually stored in `anime`. this ultimately makes it easier to access.
  
 ```C++
-mal::anime_get("one piece", 5, [](const mal::anime& anime) {
+mal::search<mal::anime>("one piece", 5, [](auto anime) {
 	...
 });
 ```
 
 manga...
 ```C++
-mal::manga_get("one piece", 5, [](const mal::manga& manga) {
+mal::search<mal::manga>("one piece", 5, [](auto manga) {
 	...
 });
 ```
