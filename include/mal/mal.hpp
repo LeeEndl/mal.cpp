@@ -38,7 +38,6 @@ namespace mal {
 		s_large /* larger than s_normal */
 	};
 
-	/* manga is static. */
 	enum type {
 		t_null, /* none mentioned */
 		t_tv, /* anime series */
@@ -102,32 +101,6 @@ namespace mal {
 	private:
 	};
 
-	/* GET a specific anime via name
-	 * support spaces, mis-spelling. however this is not enhanced; wrong result is possible.
-	 * @param name this can be any string type, long as it supports std::format()
-	 * @param results the number of results. this is useful for getting a whole anime series collection like one piece movies, fate series, ect
-	 * @param callback used to get all results once function is done
-	*/
-	template<typename T>
-	void anime_get(const T& name, const short& results, std::function<void(const anime&)> callback) noexcept {
-		if (results > SHRT_MAX) return;
-		request([&name, &results, &callback](std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>& curl) {
-			std::unique_ptr<std::string> all_data{ new std::string };
-			std::unique_ptr<nlohmann::json> j{ new nlohmann::json };
-			for (short page = 1; page <= (results + 24) / 25; ++page) {
-				curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/v4/anime?q=\"{0}\"&limit={1}&page={2}",
-					replace(name, ' ', "%20"), (results < 25) ? results : 25, page).c_str());
-				curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, all_data.get());
-				if (curl_easy_perform(curl.get()) not_eq CURLE_OK) break;
-				*j = nlohmann::json(nlohmann::json::parse(*all_data));
-				all_data->clear();
-				if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
-				for (const nlohmann::json& data : (*j)["data"])
-					callback(std::move(anime(data)));
-			}
-			});
-	}
-
 	class manga {
 	public:
 		int mal_id{};
@@ -172,28 +145,32 @@ namespace mal {
 		constexpr ~manga() = default;
 	};
 
-	/* GET a specific manga via name
+	/* a basic GET search on http://myanimelist.net/
 	 * support spaces, mis-spelling. however this is not enhanced; wrong result is possible.
 	 * @param name this can be any string type, long as it supports std::format()
-	 * @param results the number of results. this is useful for getting a whole manga collection
+	 * @param results the number of results. this is useful for getting a whole series collection
 	 * @param callback used to get all results once function is done
 	*/
-	template<typename T>
-	void manga_get(const T& name, const short& results, std::function<void(const manga&)> callback) noexcept {
+	template<typename T, typename string_Type>
+	void search(const string_Type& name, const short& results, std::function<void(const T&)> callback) noexcept {
 		if (results > SHRT_MAX) return;
-		request([&name, &results, &callback](std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>& curl) {
+		std::string classless{ typeid(T).name() };
+		if (classless.find("anime") not_eq -1) classless = "anime";
+		else if (classless.find("manga") not_eq -1) classless = "manga";
+		else return;
+		request([&name, &results, &callback, &classless](std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>& curl) {
 			std::unique_ptr<std::string> all_data{ new std::string };
 			std::unique_ptr<nlohmann::json> j{ new nlohmann::json };
 			for (short page = 1; page <= (results + 24) / 25; ++page) {
-				curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/v4/manga?q=\"{0}\"&limit={1}&page={2}",
-					replace(name, ' ', "%20"), (results < 25) ? results : 25, page).c_str());
+				curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/v4/{0}?q=\"{1}\"&limit={2}&page={3}",
+					classless, replace(name, ' ', "%20"), (results < 25) ? results : 25, page).c_str());
 				curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, all_data.get());
 				if (curl_easy_perform(curl.get()) not_eq CURLE_OK) break;
 				*j = nlohmann::json(nlohmann::json::parse(*all_data));
 				all_data->clear();
 				if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
 				for (const nlohmann::json& data : (*j)["data"])
-					callback(std::move(manga(data)));
+					callback(std::move(T(data)));
 			}
 			});
 	}
