@@ -1,13 +1,10 @@
-#pragma comment(lib, "./include/curl/libcurl.lib")
+#pragma comment(lib, "./include/openssl/libcrypto.lib")
+#pragma comment(lib, "./include/openssl/libssl.lib")
 
-#include <curl/curl.h>
+#include <openssl/ssl.h>
+#include <openssl/bio.h>
 #include <nlohmann/json.hpp>
 #include <mal/jikan_cert.hpp>
-
-constexpr size_t write_data(char* data, size_t size, size_t bytes, std::string* outcome) noexcept {
-	outcome->append(std::move(data), size * bytes);
-	return size * bytes;
-}
 
 std::string replace(const std::string& str, char replace, std::string with) noexcept {
 	std::stringstream mstr{};
@@ -19,16 +16,6 @@ std::string replace(const std::string& str, char replace, std::string with) noex
 template<typename T> T is_null(const nlohmann::json& j) noexcept {
 	if (j.is_null()) return {};
 	return j.get<T>();
-}
-
-void request(std::function<void(std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>&)> request) noexcept {
-	std::unique_ptr<CURL, decltype(&curl_easy_cleanup)> curl{ curl_easy_init(), curl_easy_cleanup };
-	if (not std::ifstream{ ".\\cacert.pem" })
-		std::ofstream{ ".\\cacert.pem" } << jikan_cert;
-	curl_easy_setopt(curl.get(), CURLOPT_CAINFO, ".\\cacert.pem");
-	curl_easy_setopt(curl.get(), CURLOPT_CAPATH, ".\\cacert.pem");
-	curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, write_data);
-	request(curl);
 }
 
 namespace mal {
@@ -49,7 +36,7 @@ namespace mal {
 
 	class anime {
 	public:
-		int mal_id{};
+		short mal_id{};
 		std::vector<std::string> image{}; /* the front image on MAL of that anime. enum: image_size */
 		std::string title{}; /* recommended title. as some animes only have japanese title. */
 		std::string jp_title{}; /* Japanese title. */
@@ -61,15 +48,15 @@ namespace mal {
 		std::string duration{}; /* on average the length of each episode. */
 		std::string rating{}; /* the level of maturity of this anime. e.g. R, PG */
 		double score{}; /* medium of overall score of this anime. e.g. 1.0 - 10.0 */
-		int scored_by{}; /* number of people who scored this anime. */
-		int rank{}; /* anime ranking. */
-		int popularity{}; /* the overall popularity of this anime. */
-		int favorites{}; /* total favorites. */
+		short scored_by{}; /* number of people who scored this anime. */
+		short rank{}; /* anime ranking. */
+		short popularity{}; /* the overall popularity of this anime. */
+		short favorites{}; /* total favorites. */
 		std::string synopsis{}; /* about the anime. */
 		std::string background{}; /* about the production. */
 
 		anime(const nlohmann::json& j) noexcept {
-			this->mal_id = is_null<int>(j["mal_id"]);
+			this->mal_id = is_null<short>(j["mal_id"]);
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
 				this->image.push_back(is_null<std::string>(j["images"]["jpg"][size]));
 			this->title = is_null<std::string>(j["title"]);
@@ -90,10 +77,10 @@ namespace mal {
 			this->duration = is_null<std::string>(j["duration"]);
 			this->rating = is_null<std::string>(j["rating"]);
 			this->score = is_null<double>(j["score"]);
-			this->scored_by = is_null<int>(j["scored_by"]);
-			this->rank = is_null<int>(j["rank"]);
-			this->popularity = is_null<int>(j["popularity"]);
-			this->favorites = is_null<int>(j["favorites"]);
+			this->scored_by = is_null<short>(j["scored_by"]);
+			this->rank = is_null<short>(j["rank"]);
+			this->popularity = is_null<short>(j["popularity"]);
+			this->favorites = is_null<short>(j["favorites"]);
 			this->synopsis = is_null<std::string>(j["synopsis"]);
 			this->background = is_null<std::string>(j["background"]);
 		}
@@ -152,26 +139,50 @@ namespace mal {
 	 * @param callback used to get all results once function is done
 	*/
 	template<typename T, typename string_Type>
-	void search(const string_Type& name, const short& results, std::function<void(const T&)> callback) noexcept {
+	void search(const string_Type& name, const short& results, std::function<void(const T&)> callback) {
 		if (results > SHRT_MAX) return;
 		std::string classless{ typeid(T).name() };
 		if (classless.find("anime") not_eq -1) classless = "anime";
 		else if (classless.find("manga") not_eq -1) classless = "manga";
 		else return;
-		request([&name, &results, &callback, &classless](std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>& curl) {
-			std::unique_ptr<std::string> all_data{ new std::string };
-			std::unique_ptr<nlohmann::json> j{ new nlohmann::json };
-			for (short page = 1; page <= (results + 24) / 25; ++page) {
-				curl_easy_setopt(curl.get(), CURLOPT_URL, std::format("https://api.jikan.moe/v4/{0}?q=\"{1}\"&limit={2}&page={3}",
-					classless, replace(name, ' ', "%20"), (results < 25) ? results : 25, page).c_str());
-				curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, all_data.get());
-				if (curl_easy_perform(curl.get()) not_eq CURLE_OK) break;
-				*j = nlohmann::json(nlohmann::json::parse(*all_data));
-				all_data->clear();
-				if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
-				for (const nlohmann::json& data : (*j)["data"])
-					callback(std::move(T(data)));
+		OPENSSL_init_ssl(0, NULL);
+		for (short page = 1; page <= (results + 24) / 25; ++page) {
+			std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
+			std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
+			SSL* ssl{};
+			BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, (char*)&ssl);
+			SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, NULL);
+			BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, (char*)"api.jikan.moe:https");
+			std::stringstream request;
+			request << "GET /v4/" << classless << "?q=\"" << replace(name, ' ', "%20") << "\"&limit=" << ((results < 25) ? results : 25) << "&page=" << page << " HTTP/1.1\x0D\x0AHost: api.jikan.moe\x0D\x0A\x43onnection: Close\x0D\x0A\x0D\x0A";
+			BIO_puts(bio.get(), request.str().c_str());
+			std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
+			all_data->reserve(2048);
+			std::unique_ptr<char[]> temp = std::make_unique<char[]>(2048);
+			bool header_end{};
+			int r{};
+			while ((r = BIO_read(bio.get(), temp.get(), sizeof(temp) - 1)) > 0) {
+				temp[r] = '\0';
+
+				if (not header_end) {
+					all_data->append(temp.get());
+					if (all_data->find("\r\n\r\n") not_eq -1) {
+						all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
+						header_end = true;
+					}
+				}
+				else
+					all_data->append(temp.get());
 			}
-			});
+			all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + 2)));
+			std::unique_ptr<nlohmann::json> j = std::make_unique<nlohmann::json>();
+			if (nlohmann::json::accept(*all_data))
+				*j = nlohmann::json(nlohmann::json::parse(*all_data));
+			all_data->clear();
+			if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
+			for (const nlohmann::json& data : (*j)["data"])
+				callback(std::move(T(data)));
+		}
+		OPENSSL_cleanup();
 	}
 }
