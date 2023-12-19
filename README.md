@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a7a7adebae7b4d4e95f415c22b4227f5)](https://app.codacy.com/gh/LeeEndl/mal.cpp/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 <div>
 
 ## including 
