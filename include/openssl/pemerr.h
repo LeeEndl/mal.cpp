@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * PEM reason codes.
- */
+ /*
+  * PEM reason codes.
+  */
 # define PEM_R_BAD_BASE64_DECODE                          100
 # define PEM_R_BAD_DECRYPT                                101
 # define PEM_R_BAD_END_LINE                               102

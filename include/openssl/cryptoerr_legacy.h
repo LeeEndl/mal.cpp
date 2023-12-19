@@ -7,12 +7,12 @@
  * https://www.openssl.org/source/license.html
  */
 
-/*
- * This header file preserves symbols from pre-3.0 OpenSSL.
- * It should never be included directly, as it's already included
- * by the public {lib}err.h headers, and since it will go away some
- * time in the future.
- */
+ /*
+  * This header file preserves symbols from pre-3.0 OpenSSL.
+  * It should never be included directly, as it's already included
+  * by the public {lib}err.h headers, and since it will go away some
+  * time in the future.
+  */
 
 #ifndef OPENSSL_CRYPTOERR_LEGACY_H
 # define OPENSSL_CRYPTOERR_LEGACY_H
@@ -26,59 +26,59 @@ extern "C" {
 # endif
 
 # ifndef OPENSSL_NO_DEPRECATED_3_0
-OSSL_DEPRECATEDIN_3_0 int ERR_load_ASN1_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_ASYNC_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_BIO_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_BN_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_BUF_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_ASN1_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_ASYNC_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_BIO_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_BN_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_BUF_strings(void);
 #  ifndef OPENSSL_NO_CMS
-OSSL_DEPRECATEDIN_3_0 int ERR_load_CMS_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_CMS_strings(void);
 #  endif
 #  ifndef OPENSSL_NO_COMP
-OSSL_DEPRECATEDIN_3_0 int ERR_load_COMP_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_COMP_strings(void);
 #  endif
-OSSL_DEPRECATEDIN_3_0 int ERR_load_CONF_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_CRYPTO_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_CONF_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_CRYPTO_strings(void);
 #  ifndef OPENSSL_NO_CT
-OSSL_DEPRECATEDIN_3_0 int ERR_load_CT_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_CT_strings(void);
 #  endif
 #  ifndef OPENSSL_NO_DH
-OSSL_DEPRECATEDIN_3_0 int ERR_load_DH_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_DH_strings(void);
 #  endif
 #  ifndef OPENSSL_NO_DSA
-OSSL_DEPRECATEDIN_3_0 int ERR_load_DSA_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_DSA_strings(void);
 #  endif
 #  ifndef OPENSSL_NO_EC
-OSSL_DEPRECATEDIN_3_0 int ERR_load_EC_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_EC_strings(void);
 #  endif
 #  ifndef OPENSSL_NO_ENGINE
-OSSL_DEPRECATEDIN_3_0 int ERR_load_ENGINE_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_ENGINE_strings(void);
 #  endif
-OSSL_DEPRECATEDIN_3_0 int ERR_load_ERR_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_EVP_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_KDF_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_OBJ_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_ERR_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_EVP_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_KDF_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_OBJ_strings(void);
 #  ifndef OPENSSL_NO_OCSP
-OSSL_DEPRECATEDIN_3_0 int ERR_load_OCSP_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_OCSP_strings(void);
 #  endif
-OSSL_DEPRECATEDIN_3_0 int ERR_load_PEM_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_PKCS12_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_PKCS7_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_RAND_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_RSA_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_OSSL_STORE_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_PEM_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_PKCS12_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_PKCS7_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_RAND_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_RSA_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_OSSL_STORE_strings(void);
 #  ifndef OPENSSL_NO_TS
-OSSL_DEPRECATEDIN_3_0 int ERR_load_TS_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_TS_strings(void);
 #  endif
-OSSL_DEPRECATEDIN_3_0 int ERR_load_UI_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_X509_strings(void);
-OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_UI_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_X509_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 
-/* Collected _F_ macros from OpenSSL 1.1.1 */
+	/* Collected _F_ macros from OpenSSL 1.1.1 */
 
-/*
- * ASN1 function codes.
- */
+	/*
+	 * ASN1 function codes.
+	 */
 #  define ASN1_F_A2D_ASN1_OBJECT                           0
 #  define ASN1_F_A2I_ASN1_INTEGER                          0
 #  define ASN1_F_A2I_ASN1_STRING                           0
@@ -193,9 +193,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define ASN1_F_X509_NAME_EX_NEW                          0
 #  define ASN1_F_X509_PKEY_NEW                             0
 
-/*
- * ASYNC function codes.
- */
+	 /*
+	  * ASYNC function codes.
+	  */
 #  define ASYNC_F_ASYNC_CTX_NEW                            0
 #  define ASYNC_F_ASYNC_INIT_THREAD                        0
 #  define ASYNC_F_ASYNC_JOB_NEW                            0
@@ -204,9 +204,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define ASYNC_F_ASYNC_START_JOB                          0
 #  define ASYNC_F_ASYNC_WAIT_CTX_SET_WAIT_FD               0
 
-/*
- * BIO function codes.
- */
+	  /*
+	   * BIO function codes.
+	   */
 #  define BIO_F_ACPT_STATE                                 0
 #  define BIO_F_ADDRINFO_WRAP                              0
 #  define BIO_F_ADDR_STRINGS                               0
@@ -264,9 +264,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define BIO_F_SLG_WRITE                                  0
 #  define BIO_F_SSL_NEW                                    0
 
-/*
- * BN function codes.
- */
+	   /*
+		* BN function codes.
+		*/
 #  define BN_F_BNRAND                                      0
 #  define BN_F_BNRAND_RANGE                                0
 #  define BN_F_BN_BLINDING_CONVERT_EX                      0
@@ -317,17 +317,17 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define BN_F_BN_STACK_PUSH                               0
 #  define BN_F_BN_USUB                                     0
 
-/*
- * BUF function codes.
- */
+		/*
+		 * BUF function codes.
+		 */
 #  define BUF_F_BUF_MEM_GROW                               0
 #  define BUF_F_BUF_MEM_GROW_CLEAN                         0
 #  define BUF_F_BUF_MEM_NEW                                0
 
 #  ifndef OPENSSL_NO_CMS
-/*
- * CMS function codes.
- */
+		 /*
+		  * CMS function codes.
+		  */
 #   define CMS_F_CHECK_CONTENT                              0
 #   define CMS_F_CMS_ADD0_CERT                              0
 #   define CMS_F_CMS_ADD0_RECIPIENT_KEY                     0
@@ -414,9 +414,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  endif
 
 #  ifndef OPENSSL_NO_COMP
-/*
- * COMP function codes.
- */
+		  /*
+		   * COMP function codes.
+		   */
 #   define COMP_F_BIO_ZLIB_FLUSH                            0
 #   define COMP_F_BIO_ZLIB_NEW                              0
 #   define COMP_F_BIO_ZLIB_READ                             0
@@ -424,9 +424,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #   define COMP_F_COMP_CTX_NEW                              0
 #  endif
 
-/*
- * CONF function codes.
- */
+		   /*
+			* CONF function codes.
+			*/
 #  define CONF_F_CONF_DUMP_FP                              0
 #  define CONF_F_CONF_LOAD                                 0
 #  define CONF_F_CONF_LOAD_FP                              0
@@ -451,9 +451,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define CONF_F_SSL_MODULE_INIT                           0
 #  define CONF_F_STR_COPY                                  0
 
-/*
- * CRYPTO function codes.
- */
+			/*
+			 * CRYPTO function codes.
+			 */
 #  define CRYPTO_F_CMAC_CTX_NEW                            0
 #  define CRYPTO_F_CRYPTO_DUP_EX_DATA                      0
 #  define CRYPTO_F_CRYPTO_FREE_EX_DATA                     0
@@ -478,9 +478,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define CRYPTO_F_SK_RESERVE                              0
 
 #  ifndef OPENSSL_NO_CT
-/*
- * CT function codes.
- */
+			 /*
+			  * CT function codes.
+			  */
 #   define CT_F_CTLOG_NEW                                   0
 #   define CT_F_CTLOG_NEW_FROM_BASE64                       0
 #   define CT_F_CTLOG_NEW_FROM_CONF                         0
@@ -511,9 +511,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  endif
 
 #  ifndef OPENSSL_NO_DH
-/*
- * DH function codes.
- */
+			  /*
+			   * DH function codes.
+			   */
 #   define DH_F_COMPUTE_KEY                                 0
 #   define DH_F_DHPARAMS_PRINT_FP                           0
 #   define DH_F_DH_BUILTIN_GENPARAMS                        0
@@ -543,9 +543,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  endif
 
 #  ifndef OPENSSL_NO_DSA
-/*
- * DSA function codes.
- */
+			   /*
+				* DSA function codes.
+				*/
 #   define DSA_F_DSAPARAMS_PRINT                            0
 #   define DSA_F_DSAPARAMS_PRINT_FP                         0
 #   define DSA_F_DSA_BUILTIN_PARAMGEN                       0
@@ -572,9 +572,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  endif
 
 #  ifndef OPENSSL_NO_EC
-/*
- * EC function codes.
- */
+				/*
+				 * EC function codes.
+				 */
 #   define EC_F_BN_TO_FELEM                                 0
 #   define EC_F_D2I_ECPARAMETERS                            0
 #   define EC_F_D2I_ECPKPARAMETERS                          0
@@ -752,9 +752,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  endif
 
 #  ifndef OPENSSL_NO_ENGINE
-/*
- * ENGINE function codes.
- */
+				 /*
+				  * ENGINE function codes.
+				  */
 #   define ENGINE_F_DIGEST_UPDATE                           0
 #   define ENGINE_F_DYNAMIC_CTRL                            0
 #   define ENGINE_F_DYNAMIC_GET_DATA_CTX                    0
@@ -797,9 +797,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #   define ENGINE_F_OSSL_HMAC_INIT                          0
 #  endif
 
-/*
- * EVP function codes.
- */
+				  /*
+				   * EVP function codes.
+				   */
 #  define EVP_F_AESNI_INIT_KEY                             0
 #  define EVP_F_AESNI_XTS_INIT_KEY                         0
 #  define EVP_F_AES_GCM_CTRL                               0
@@ -903,9 +903,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define EVP_F_S390X_AES_GCM_CTRL                         0
 #  define EVP_F_UPDATE                                     0
 
-/*
- * KDF function codes.
- */
+				   /*
+					* KDF function codes.
+					*/
 #  define KDF_F_PKEY_HKDF_CTRL_STR                         0
 #  define KDF_F_PKEY_HKDF_DERIVE                           0
 #  define KDF_F_PKEY_HKDF_INIT                             0
@@ -919,9 +919,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define KDF_F_PKEY_TLS1_PRF_INIT                         0
 #  define KDF_F_TLS1_PRF_ALG                               0
 
-/*
- * KDF reason codes.
- */
+					/*
+					 * KDF reason codes.
+					 */
 #  define KDF_R_INVALID_DIGEST                             0
 #  define KDF_R_MISSING_ITERATION_COUNT                    0
 #  define KDF_R_MISSING_KEY                                0
@@ -935,9 +935,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define KDF_R_VALUE_ERROR                                0
 #  define KDF_R_VALUE_MISSING                              0
 
-/*
- * OBJ function codes.
- */
+					 /*
+					  * OBJ function codes.
+					  */
 #  define OBJ_F_OBJ_ADD_OBJECT                             0
 #  define OBJ_F_OBJ_ADD_SIGID                              0
 #  define OBJ_F_OBJ_CREATE                                 0
@@ -949,9 +949,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define OBJ_F_OBJ_TXT2OBJ                                0
 
 #  ifndef OPENSSL_NO_OCSP
-/*
- * OCSP function codes.
- */
+					  /*
+					   * OCSP function codes.
+					   */
 #   define OCSP_F_D2I_OCSP_NONCE                            0
 #   define OCSP_F_OCSP_BASIC_ADD1_STATUS                    0
 #   define OCSP_F_OCSP_BASIC_SIGN                           0
@@ -970,9 +970,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #   define OCSP_F_PARSE_HTTP_LINE1                          0
 #  endif
 
-/*
- * PEM function codes.
- */
+					   /*
+						* PEM function codes.
+						*/
 #  define PEM_F_B2I_DSS                                    0
 #  define PEM_F_B2I_PVK_BIO                                0
 #  define PEM_F_B2I_RSA                                    0
@@ -1017,9 +1017,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define PEM_F_PEM_X509_INFO_READ_BIO                     0
 #  define PEM_F_PEM_X509_INFO_WRITE_BIO                    0
 
-/*
- * PKCS12 function codes.
- */
+						/*
+						 * PKCS12 function codes.
+						 */
 #  define PKCS12_F_OPENSSL_ASC2UNI                         0
 #  define PKCS12_F_OPENSSL_UNI2ASC                         0
 #  define PKCS12_F_OPENSSL_UNI2UTF8                        0
@@ -1050,9 +1050,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define PKCS12_F_PKCS8_ENCRYPT                           0
 #  define PKCS12_F_PKCS8_SET0_PBE                          0
 
-/*
- * PKCS7 function codes.
- */
+						 /*
+						  * PKCS7 function codes.
+						  */
 #  define PKCS7_F_DO_PKCS7_SIGNED_ATTRIB                   0
 #  define PKCS7_F_PKCS7_ADD0_ATTRIB_SIGNING_TIME           0
 #  define PKCS7_F_PKCS7_ADD_ATTRIB_SMIMECAP                0
@@ -1088,9 +1088,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define PKCS7_F_PKCS7_SIMPLE_SMIMECAP                    0
 #  define PKCS7_F_PKCS7_VERIFY                             0
 
-/*
- * RAND function codes.
- */
+						  /*
+						   * RAND function codes.
+						   */
 #  define RAND_F_DATA_COLLECT_METHOD                       0
 #  define RAND_F_DRBG_BYTES                                0
 #  define RAND_F_DRBG_GET_ENTROPY                          0
@@ -1120,9 +1120,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define RAND_F_RAND_PSEUDO_BYTES                         0
 #  define RAND_F_RAND_WRITE_FILE                           0
 
-/*
- * RSA function codes.
- */
+						   /*
+							* RSA function codes.
+							*/
 #  define RSA_F_CHECK_PADDING_MD                           0
 #  define RSA_F_ENCODE_PKCS1                               0
 #  define RSA_F_INT_RSA_VERIFY                             0
@@ -1187,9 +1187,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define RSA_F_RSA_VERIFY_PKCS1_PSS_MGF1                  0
 #  define RSA_F_SETUP_TBUF                                 0
 
-/*
- * OSSL_STORE function codes.
- */
+							/*
+							 * OSSL_STORE function codes.
+							 */
 #  define OSSL_STORE_F_FILE_CTRL                           0
 #  define OSSL_STORE_F_FILE_FIND                           0
 #  define OSSL_STORE_F_FILE_GET_PASS                       0
@@ -1230,9 +1230,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define OSSL_STORE_F_TRY_DECODE_PKCS8ENCRYPTED           0
 
 #  ifndef OPENSSL_NO_TS
-/*
- * TS function codes.
- */
+							 /*
+							  * TS function codes.
+							  */
 #   define TS_F_DEF_SERIAL_CB                               0
 #   define TS_F_DEF_TIME_CB                                 0
 #   define TS_F_ESS_ADD_SIGNING_CERT                        0
@@ -1292,9 +1292,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #   define TS_F_TS_VERIFY_CTX_NEW                           0
 #  endif
 
-/*
- * UI function codes.
- */
+							  /*
+							   * UI function codes.
+							   */
 #  define UI_F_CLOSE_CONSOLE                               0
 #  define UI_F_ECHO_CONSOLE                                0
 #  define UI_F_GENERAL_ALLOCATE_BOOLEAN                    0
@@ -1317,9 +1317,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define UI_F_UI_SET_RESULT                               0
 #  define UI_F_UI_SET_RESULT_EX                            0
 
-/*
- * X509 function codes.
- */
+							   /*
+								* X509 function codes.
+								*/
 #  define X509_F_ADD_CERT_DIR                              0
 #  define X509_F_BUILD_CHAIN                               0
 #  define X509_F_BY_FILE_CTRL                              0
@@ -1383,9 +1383,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define X509_F_X509_VERIFY_CERT                          0
 #  define X509_F_X509_VERIFY_PARAM_NEW                     0
 
-/*
- * X509V3 function codes.
- */
+								/*
+								 * X509V3 function codes.
+								 */
 #  define X509V3_F_A2I_GENERAL_NAME                        0
 #  define X509V3_F_ADDR_VALIDATE_PATH_INTERNAL             0
 #  define X509V3_F_ASIDENTIFIERCHOICE_CANONIZE             0
@@ -1453,9 +1453,9 @@ OSSL_DEPRECATEDIN_3_0 int ERR_load_X509V3_strings(void);
 #  define X509V3_F_X509_PURPOSE_ADD                        0
 #  define X509V3_F_X509_PURPOSE_SET                        0
 
-/*
- * Compatibility defines.
- */
+								 /*
+								  * Compatibility defines.
+								  */
 # define EVP_R_OPERATON_NOT_INITIALIZED    EVP_R_OPERATION_NOT_INITIALIZED
 
 # endif

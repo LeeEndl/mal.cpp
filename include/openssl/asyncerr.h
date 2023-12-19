@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * ASYNC reason codes.
- */
+ /*
+  * ASYNC reason codes.
+  */
 # define ASYNC_R_FAILED_TO_SET_POOL                       101
 # define ASYNC_R_FAILED_TO_SWAP_CONTEXT                   102
 # define ASYNC_R_INIT_FAILED                              105

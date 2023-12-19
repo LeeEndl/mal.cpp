@@ -16,10 +16,8 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * BUF reason codes.
- */
+ /*
+  * BUF reason codes.
+  */
 
 #endif

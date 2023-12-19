@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * EVP reason codes.
- */
+ /*
+  * EVP reason codes.
+  */
 # define EVP_R_AES_KEY_SETUP_FAILED                       143
 # define EVP_R_ARIA_KEY_SETUP_FAILED                      176
 # define EVP_R_BAD_ALGORITHM_NAME                         200

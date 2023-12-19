@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * CONF reason codes.
- */
+ /*
+  * CONF reason codes.
+  */
 # define CONF_R_ERROR_LOADING_DSO                         110
 # define CONF_R_INVALID_PRAGMA                            122
 # define CONF_R_LIST_CANNOT_BE_NULL                       115

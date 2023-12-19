@@ -26,16 +26,16 @@
 extern "C" {
 #endif
 
-/*
- * Signalling cipher suite value from RFC 5746
- * (TLS_EMPTY_RENEGOTIATION_INFO_SCSV)
- */
+	/*
+	 * Signalling cipher suite value from RFC 5746
+	 * (TLS_EMPTY_RENEGOTIATION_INFO_SCSV)
+	 */
 # define SSL3_CK_SCSV                            0x030000FF
 
-/*
- * Signalling cipher suite value from draft-ietf-tls-downgrade-scsv-00
- * (TLS_FALLBACK_SCSV)
- */
+	 /*
+	  * Signalling cipher suite value from draft-ietf-tls-downgrade-scsv-00
+	  * (TLS_FALLBACK_SCSV)
+	  */
 # define SSL3_CK_FALLBACK_SCSV                   0x03005600
 
 # define SSL3_CK_RSA_NULL_MD5                    0x03000001
@@ -75,7 +75,7 @@ extern "C" {
 # define SSL3_CK_ADH_DES_64_CBC_SHA              0x0300001A
 # define SSL3_CK_ADH_DES_192_CBC_SHA             0x0300001B
 
-/* a bundle of RFC standard cipher names, generated from ssl3_ciphers[] */
+	  /* a bundle of RFC standard cipher names, generated from ssl3_ciphers[] */
 # define SSL3_RFC_RSA_NULL_MD5                   "TLS_RSA_WITH_NULL_MD5"
 # define SSL3_RFC_RSA_NULL_SHA                   "TLS_RSA_WITH_NULL_SHA"
 # define SSL3_RFC_RSA_DES_192_CBC3_SHA           "TLS_RSA_WITH_3DES_EDE_CBC_SHA"
@@ -157,23 +157,23 @@ extern "C" {
 #  endif
 # endif
 
-/*
- * This is the maximum MAC (digest) size used by the SSL library. Currently
- * maximum of 20 is used by SHA1, but we reserve for future extension for
- * 512-bit hashes.
- */
+ /*
+  * This is the maximum MAC (digest) size used by the SSL library. Currently
+  * maximum of 20 is used by SHA1, but we reserve for future extension for
+  * 512-bit hashes.
+  */
 
 # define SSL3_RT_MAX_MD_SIZE                     64
 
-/*
- * Maximum block size used in all ciphersuites. Currently 16 for AES.
- */
+  /*
+   * Maximum block size used in all ciphersuites. Currently 16 for AES.
+   */
 
 # define SSL_RT_MAX_CIPHER_BLOCK_SIZE            16
 
 # define SSL3_RT_MAX_EXTRA                       (16384)
 
-/* Maximum plaintext length: defined by SSL/TLS standards */
+   /* Maximum plaintext length: defined by SSL/TLS standards */
 # define SSL3_RT_MAX_PLAIN_LENGTH                16384
 /* Maximum compression overhead: defined by SSL/TLS standards */
 # define SSL3_RT_MAX_COMPRESSED_OVERHEAD         1024
@@ -186,15 +186,15 @@ extern "C" {
 # define SSL3_RT_MAX_ENCRYPTED_OVERHEAD        (256 + SSL3_RT_MAX_MD_SIZE)
 # define SSL3_RT_MAX_TLS13_ENCRYPTED_OVERHEAD  256
 
-/*
- * OpenSSL currently only uses a padding length of at most one block so the
- * send overhead is smaller.
- */
+ /*
+  * OpenSSL currently only uses a padding length of at most one block so the
+  * send overhead is smaller.
+  */
 
 # define SSL3_RT_SEND_MAX_ENCRYPTED_OVERHEAD \
                         (SSL_RT_MAX_CIPHER_BLOCK_SIZE + SSL3_RT_MAX_MD_SIZE)
 
-/* If compression isn't used don't include the compression overhead */
+  /* If compression isn't used don't include the compression overhead */
 
 # ifdef OPENSSL_NO_COMP
 #  define SSL3_RT_MAX_COMPRESSED_LENGTH           SSL3_RT_MAX_PLAIN_LENGTH
@@ -258,7 +258,6 @@ extern "C" {
 # define TLS1_HB_REQUEST         1
 # define TLS1_HB_RESPONSE        2
 
-
 # define SSL3_CT_RSA_SIGN                        1
 # define SSL3_CT_DSS_SIGN                        2
 # define SSL3_CT_RSA_FIXED_DH                    3
@@ -278,7 +277,7 @@ extern "C" {
 #  endif
 # endif
 
-/* No longer used as of OpenSSL 1.1.1 */
+ /* No longer used as of OpenSSL 1.1.1 */
 # define SSL3_FLAGS_NO_RENEGOTIATE_CIPHERS       0x0001
 
 /* Removed from OpenSSL 1.1.0 */

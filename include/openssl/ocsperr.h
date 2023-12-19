@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_OCSP
 
-
-/*
- * OCSP reason codes.
- */
+ /*
+  * OCSP reason codes.
+  */
 #  define OCSP_R_CERTIFICATE_VERIFY_ERROR                  101
 #  define OCSP_R_DIGEST_ERR                                102
 #  define OCSP_R_DIGEST_NAME_ERR                           106

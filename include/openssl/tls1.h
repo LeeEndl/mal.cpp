@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-/* Default security level if not overridden at config time */
+	/* Default security level if not overridden at config time */
 # ifndef OPENSSL_TLS_SECURITY_LEVEL
 #  define OPENSSL_TLS_SECURITY_LEVEL 1
 # endif
@@ -103,8 +103,7 @@ extern "C" {
 # define TLSEXT_TYPE_elliptic_curves             TLSEXT_TYPE_supported_groups
 # define TLSEXT_TYPE_ec_point_formats            11
 
-
-/* ExtensionType value from RFC5054 */
+ /* ExtensionType value from RFC5054 */
 # define TLSEXT_TYPE_srp                         12
 
 /* ExtensionType values from RFC5246 */
@@ -122,13 +121,13 @@ extern "C" {
  */
 # define TLSEXT_TYPE_signed_certificate_timestamp    18
 
-/*
- * ExtensionType value for TLS padding extension.
- * http://tools.ietf.org/html/draft-agl-tls-padding
- */
+ /*
+  * ExtensionType value for TLS padding extension.
+  * http://tools.ietf.org/html/draft-agl-tls-padding
+  */
 # define TLSEXT_TYPE_padding     21
 
-/* ExtensionType value from RFC7366 */
+  /* ExtensionType value from RFC7366 */
 # define TLSEXT_TYPE_encrypt_then_mac    22
 
 /* ExtensionType value from RFC7627 */
@@ -211,50 +210,50 @@ extern "C" {
 # define TLSEXT_max_fragment_length_2048        3
 # define TLSEXT_max_fragment_length_4096        4
 
-int SSL_CTX_set_tlsext_max_fragment_length(SSL_CTX *ctx, uint8_t mode);
-int SSL_set_tlsext_max_fragment_length(SSL *ssl, uint8_t mode);
+	int SSL_CTX_set_tlsext_max_fragment_length(SSL_CTX* ctx, uint8_t mode);
+	int SSL_set_tlsext_max_fragment_length(SSL* ssl, uint8_t mode);
 
 # define TLSEXT_MAXLEN_host_name 255
 
-__owur const char *SSL_get_servername(const SSL *s, const int type);
-__owur int SSL_get_servername_type(const SSL *s);
-/*
- * SSL_export_keying_material exports a value derived from the master secret,
- * as specified in RFC 5705. It writes |olen| bytes to |out| given a label and
- * optional context. (Since a zero length context is allowed, the |use_context|
- * flag controls whether a context is included.) It returns 1 on success and
- * 0 or -1 otherwise.
- */
-__owur int SSL_export_keying_material(SSL *s, unsigned char *out, size_t olen,
-                                      const char *label, size_t llen,
-                                      const unsigned char *context,
-                                      size_t contextlen, int use_context);
+	__owur const char* SSL_get_servername(const SSL* s, const int type);
+	__owur int SSL_get_servername_type(const SSL* s);
+	/*
+	 * SSL_export_keying_material exports a value derived from the master secret,
+	 * as specified in RFC 5705. It writes |olen| bytes to |out| given a label and
+	 * optional context. (Since a zero length context is allowed, the |use_context|
+	 * flag controls whether a context is included.) It returns 1 on success and
+	 * 0 or -1 otherwise.
+	 */
+	__owur int SSL_export_keying_material(SSL* s, unsigned char* out, size_t olen,
+		const char* label, size_t llen,
+		const unsigned char* context,
+		size_t contextlen, int use_context);
 
-/*
- * SSL_export_keying_material_early exports a value derived from the
- * early exporter master secret, as specified in
- * https://tools.ietf.org/html/draft-ietf-tls-tls13-23. It writes
- * |olen| bytes to |out| given a label and optional context. It
- * returns 1 on success and 0 otherwise.
- */
-__owur int SSL_export_keying_material_early(SSL *s, unsigned char *out,
-                                            size_t olen, const char *label,
-                                            size_t llen,
-                                            const unsigned char *context,
-                                            size_t contextlen);
+	/*
+	 * SSL_export_keying_material_early exports a value derived from the
+	 * early exporter master secret, as specified in
+	 * https://tools.ietf.org/html/draft-ietf-tls-tls13-23. It writes
+	 * |olen| bytes to |out| given a label and optional context. It
+	 * returns 1 on success and 0 otherwise.
+	 */
+	__owur int SSL_export_keying_material_early(SSL* s, unsigned char* out,
+		size_t olen, const char* label,
+		size_t llen,
+		const unsigned char* context,
+		size_t contextlen);
 
-int SSL_get_peer_signature_type_nid(const SSL *s, int *pnid);
-int SSL_get_signature_type_nid(const SSL *s, int *pnid);
+	int SSL_get_peer_signature_type_nid(const SSL* s, int* pnid);
+	int SSL_get_signature_type_nid(const SSL* s, int* pnid);
 
-int SSL_get_sigalgs(SSL *s, int idx,
-                    int *psign, int *phash, int *psignandhash,
-                    unsigned char *rsig, unsigned char *rhash);
+	int SSL_get_sigalgs(SSL* s, int idx,
+		int* psign, int* phash, int* psignandhash,
+		unsigned char* rsig, unsigned char* rhash);
 
-int SSL_get_shared_sigalgs(SSL *s, int idx,
-                           int *psign, int *phash, int *psignandhash,
-                           unsigned char *rsig, unsigned char *rhash);
+	int SSL_get_shared_sigalgs(SSL* s, int idx,
+		int* psign, int* phash, int* psignandhash,
+		unsigned char* rsig, unsigned char* rhash);
 
-__owur int SSL_check_chain(SSL *s, X509 *x, EVP_PKEY *pk, STACK_OF(X509) *chain);
+	__owur int SSL_check_chain(SSL* s, X509* x, EVP_PKEY* pk, STACK_OF(X509)* chain);
 
 # define SSL_set_tlsext_host_name(s,name) \
         SSL_ctrl(s,SSL_CTRL_SET_TLSEXT_HOSTNAME,TLSEXT_NAMETYPE_host_name,\
@@ -330,11 +329,11 @@ __owur int SSL_check_chain(SSL *s, X509 *x, EVP_PKEY *pk, STACK_OF(X509) *chain)
         SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB,\
                 (void (*)(void))cb)
 # endif
-int SSL_CTX_set_tlsext_ticket_key_evp_cb
-    (SSL_CTX *ctx, int (*fp)(SSL *, unsigned char *, unsigned char *,
-                             EVP_CIPHER_CTX *, EVP_MAC_CTX *, int));
+	int SSL_CTX_set_tlsext_ticket_key_evp_cb
+	(SSL_CTX* ctx, int (*fp)(SSL*, unsigned char*, unsigned char*,
+		EVP_CIPHER_CTX*, EVP_MAC_CTX*, int));
 
-/* PSK ciphersuites from 4279 */
+	/* PSK ciphersuites from 4279 */
 # define TLS1_CK_PSK_WITH_RC4_128_SHA                    0x0300008A
 # define TLS1_CK_PSK_WITH_3DES_EDE_CBC_SHA               0x0300008B
 # define TLS1_CK_PSK_WITH_AES_128_CBC_SHA                0x0300008C
@@ -811,7 +810,6 @@ int SSL_CTX_set_tlsext_ticket_key_evp_cb
 # define TLS1_RFC_RSA_PSK_WITH_ARIA_128_GCM_SHA256       "TLS_RSA_PSK_WITH_ARIA_128_GCM_SHA256"
 # define TLS1_RFC_RSA_PSK_WITH_ARIA_256_GCM_SHA384       "TLS_RSA_PSK_WITH_ARIA_256_GCM_SHA384"
 
-
 /*
  * XXX Backward compatibility alert: Older versions of OpenSSL gave some DHE
  * ciphers names with "EDH" instead of "DHE".  Going forward, we should be
@@ -824,7 +822,7 @@ int SSL_CTX_set_tlsext_ticket_key_evp_cb
 # define TLS1_TXT_DHE_PSK_WITH_NULL_SHA                  "DHE-PSK-NULL-SHA"
 # define TLS1_TXT_RSA_PSK_WITH_NULL_SHA                  "RSA-PSK-NULL-SHA"
 
-/* AES ciphersuites from RFC3268 */
+ /* AES ciphersuites from RFC3268 */
 # define TLS1_TXT_RSA_WITH_AES_128_SHA                   "AES128-SHA"
 # define TLS1_TXT_DH_DSS_WITH_AES_128_SHA                "DH-DSS-AES128-SHA"
 # define TLS1_TXT_DH_RSA_WITH_AES_128_SHA                "DH-RSA-AES128-SHA"
@@ -1140,7 +1138,7 @@ int SSL_CTX_set_tlsext_ticket_key_evp_cb
 
 # define TLS_MD_MAX_CONST_SIZE                     22
 
-/* ASCII: "client finished", in hex for EBCDIC compatibility */
+ /* ASCII: "client finished", in hex for EBCDIC compatibility */
 # define TLS_MD_CLIENT_FINISH_CONST                "\x63\x6c\x69\x65\x6e\x74\x20\x66\x69\x6e\x69\x73\x68\x65\x64"
 # define TLS_MD_CLIENT_FINISH_CONST_SIZE           15
 /* ASCII: "server finished", in hex for EBCDIC compatibility */
@@ -1169,10 +1167,10 @@ int SSL_CTX_set_tlsext_ticket_key_evp_cb
 # define TLS_MD_EXTENDED_MASTER_SECRET_CONST_SIZE  22
 
 /* TLS Session Ticket extension struct */
-struct tls_session_ticket_ext_st {
-    unsigned short length;
-    void *data;
-};
+	struct tls_session_ticket_ext_st {
+		unsigned short length;
+		void* data;
+	};
 
 #ifdef  __cplusplus
 }

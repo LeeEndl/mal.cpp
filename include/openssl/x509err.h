@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * X509 reason codes.
- */
+ /*
+  * X509 reason codes.
+  */
 # define X509_R_AKID_MISMATCH                             110
 # define X509_R_BAD_SELECTOR                              133
 # define X509_R_BAD_X509_FILETYPE                         100

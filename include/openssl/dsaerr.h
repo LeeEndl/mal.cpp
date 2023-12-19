@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_DSA
 
-
-/*
- * DSA reason codes.
- */
+ /*
+  * DSA reason codes.
+  */
 #  define DSA_R_BAD_FFC_PARAMETERS                         114
 #  define DSA_R_BAD_Q_VALUE                                102
 #  define DSA_R_BN_DECODE_ERROR                            108

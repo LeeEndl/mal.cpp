@@ -17,7 +17,7 @@
 extern "C" {
 # endif
 
-/* The test event phases */
+	/* The test event phases */
 # define OSSL_SELF_TEST_PHASE_NONE     "None"
 # define OSSL_SELF_TEST_PHASE_START    "Start"
 # define OSSL_SELF_TEST_PHASE_CORRUPT  "Corrupt"
@@ -75,18 +75,18 @@ extern "C" {
 # define OSSL_SELF_TEST_DESC_KDF_TLS13_EXPAND   "TLS13_KDF_EXPAND"
 # define OSSL_SELF_TEST_DESC_RNG            "RNG"
 
-void OSSL_SELF_TEST_set_callback(OSSL_LIB_CTX *libctx, OSSL_CALLBACK *cb,
-                                 void *cbarg);
-void OSSL_SELF_TEST_get_callback(OSSL_LIB_CTX *libctx, OSSL_CALLBACK **cb,
-                                 void **cbarg);
+	void OSSL_SELF_TEST_set_callback(OSSL_LIB_CTX* libctx, OSSL_CALLBACK* cb,
+		void* cbarg);
+	void OSSL_SELF_TEST_get_callback(OSSL_LIB_CTX* libctx, OSSL_CALLBACK** cb,
+		void** cbarg);
 
-OSSL_SELF_TEST *OSSL_SELF_TEST_new(OSSL_CALLBACK *cb, void *cbarg);
-void OSSL_SELF_TEST_free(OSSL_SELF_TEST *st);
+	OSSL_SELF_TEST* OSSL_SELF_TEST_new(OSSL_CALLBACK* cb, void* cbarg);
+	void OSSL_SELF_TEST_free(OSSL_SELF_TEST* st);
 
-void OSSL_SELF_TEST_onbegin(OSSL_SELF_TEST *st, const char *type,
-                            const char *desc);
-int OSSL_SELF_TEST_oncorrupt_byte(OSSL_SELF_TEST *st, unsigned char *bytes);
-void OSSL_SELF_TEST_onend(OSSL_SELF_TEST *st, int ret);
+	void OSSL_SELF_TEST_onbegin(OSSL_SELF_TEST* st, const char* type,
+		const char* desc);
+	int OSSL_SELF_TEST_oncorrupt_byte(OSSL_SELF_TEST* st, unsigned char* bytes);
+	void OSSL_SELF_TEST_onend(OSSL_SELF_TEST* st, int ret);
 
 # ifdef __cplusplus
 }

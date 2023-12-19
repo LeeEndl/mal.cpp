@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_DH
 
-
-/*
- * DH reason codes.
- */
+ /*
+  * DH reason codes.
+  */
 #  define DH_R_BAD_FFC_PARAMETERS                          127
 #  define DH_R_BAD_GENERATOR                               101
 #  define DH_R_BN_DECODE_ERROR                             109

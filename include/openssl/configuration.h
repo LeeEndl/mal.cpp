@@ -23,9 +23,9 @@ extern "C" {
 #  error OPENSSL_ALGORITHM_DEFINES no longer supported
 # endif
 
-/*
- * OpenSSL was configured with the following options:
- */
+	/*
+	 * OpenSSL was configured with the following options:
+	 */
 
 # ifndef OPENSSL_SYS_WIN64A
 #  define OPENSSL_SYS_WIN64A 1
@@ -101,8 +101,7 @@ extern "C" {
 #  define OPENSSL_NO_STATIC_ENGINE
 # endif
 
-
-/* Generate 80386 code? */
+	 /* Generate 80386 code? */
 # undef I386_ONLY
 
 /*
@@ -110,7 +109,7 @@ extern "C" {
  */
 # if !defined(OPENSSL_SYS_UEFI)
 #  undef BN_LLONG
-/* Only one for the following should be defined */
+ /* Only one for the following should be defined */
 #  undef SIXTY_FOUR_BIT_LONG
 #  define SIXTY_FOUR_BIT
 #  undef THIRTY_TWO_BIT

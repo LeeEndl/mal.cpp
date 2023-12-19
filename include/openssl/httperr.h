@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * HTTP reason codes.
- */
+ /*
+  * HTTP reason codes.
+  */
 # define HTTP_R_ASN1_LEN_EXCEEDS_MAX_RESP_LEN             108
 # define HTTP_R_CONNECT_FAILURE                           100
 # define HTTP_R_ERROR_PARSING_ASN1_LENGTH                 109

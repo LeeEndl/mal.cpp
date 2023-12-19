@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_ENGINE
 
-
-/*
- * ENGINE reason codes.
- */
+ /*
+  * ENGINE reason codes.
+  */
 #  define ENGINE_R_ALREADY_LOADED                          100
 #  define ENGINE_R_ARGUMENT_IS_NOT_A_NUMBER                133
 #  define ENGINE_R_CMD_NOT_EXECUTABLE                      134

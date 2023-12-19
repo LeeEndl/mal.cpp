@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * PKCS12 reason codes.
- */
+ /*
+  * PKCS12 reason codes.
+  */
 # define PKCS12_R_CANT_PACK_STRUCTURE                     100
 # define PKCS12_R_CONTENT_TYPE_NOT_DATA                   121
 # define PKCS12_R_DECODE_ERROR                            101

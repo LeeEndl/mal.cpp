@@ -24,7 +24,7 @@ extern "C" {
 
 #include <openssl/opensslconf.h>
 
-/* DTLS*_VERSION constants are defined in prov_ssl.h */
+	/* DTLS*_VERSION constants are defined in prov_ssl.h */
 # ifndef OPENSSL_NO_DEPRECATED_3_0
 #  define DTLS_MIN_VERSION                DTLS1_VERSION
 #  define DTLS_MAX_VERSION                DTLS1_2_VERSION

@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * RSA reason codes.
- */
+ /*
+  * RSA reason codes.
+  */
 # define RSA_R_ALGORITHM_MISMATCH                         100
 # define RSA_R_BAD_E_VALUE                                101
 # define RSA_R_BAD_FIXED_HEADER_DECRYPT                   102

@@ -28,30 +28,30 @@ extern "C" {
 #  define MD5_DIGEST_LENGTH 16
 
 #  if !defined(OPENSSL_NO_DEPRECATED_3_0)
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * ! MD5_LONG has to be at least 32 bits wide.                     !
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
+	/*
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 * ! MD5_LONG has to be at least 32 bits wide.                     !
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 */
 #   define MD5_LONG unsigned int
 
 #   define MD5_CBLOCK      64
 #   define MD5_LBLOCK      (MD5_CBLOCK/4)
 
-typedef struct MD5state_st {
-    MD5_LONG A, B, C, D;
-    MD5_LONG Nl, Nh;
-    MD5_LONG data[MD5_LBLOCK];
-    unsigned int num;
-} MD5_CTX;
+	typedef struct MD5state_st {
+		MD5_LONG A, B, C, D;
+		MD5_LONG Nl, Nh;
+		MD5_LONG data[MD5_LBLOCK];
+		unsigned int num;
+	} MD5_CTX;
 #  endif
 #  ifndef OPENSSL_NO_DEPRECATED_3_0
-OSSL_DEPRECATEDIN_3_0 int MD5_Init(MD5_CTX *c);
-OSSL_DEPRECATEDIN_3_0 int MD5_Update(MD5_CTX *c, const void *data, size_t len);
-OSSL_DEPRECATEDIN_3_0 int MD5_Final(unsigned char *md, MD5_CTX *c);
-OSSL_DEPRECATEDIN_3_0 unsigned char *MD5(const unsigned char *d, size_t n,
-                                         unsigned char *md);
-OSSL_DEPRECATEDIN_3_0 void MD5_Transform(MD5_CTX *c, const unsigned char *b);
+	OSSL_DEPRECATEDIN_3_0 int MD5_Init(MD5_CTX* c);
+	OSSL_DEPRECATEDIN_3_0 int MD5_Update(MD5_CTX* c, const void* data, size_t len);
+	OSSL_DEPRECATEDIN_3_0 int MD5_Final(unsigned char* md, MD5_CTX* c);
+	OSSL_DEPRECATEDIN_3_0 unsigned char* MD5(const unsigned char* d, size_t n,
+		unsigned char* md);
+	OSSL_DEPRECATEDIN_3_0 void MD5_Transform(MD5_CTX* c, const unsigned char* b);
 #  endif
 
 #  ifdef  __cplusplus

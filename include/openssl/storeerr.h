@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * OSSL_STORE reason codes.
- */
+ /*
+  * OSSL_STORE reason codes.
+  */
 # define OSSL_STORE_R_AMBIGUOUS_CONTENT_TYPE              107
 # define OSSL_STORE_R_BAD_PASSWORD_READ                   115
 # define OSSL_STORE_R_ERROR_VERIFYING_PKCS12_MAC          113
