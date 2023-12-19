@@ -15,7 +15,7 @@
 extern "C" {
 # endif
 
-/* Well known parameter names that core passes to providers */
+	/* Well known parameter names that core passes to providers */
 #define OSSL_PROV_PARAM_CORE_VERSION         "openssl-version" /* utf8_ptr */
 #define OSSL_PROV_PARAM_CORE_PROV_NAME       "provider-name"   /* utf8_ptr */
 #define OSSL_PROV_PARAM_CORE_MODULE_FILENAME "module-filename" /* utf8_ptr */
@@ -52,20 +52,20 @@ extern "C" {
 #define OSSL_OBJECT_PARAM_DATA              "data" /* OCTET_STRING or UTF8_STRING */
 #define OSSL_OBJECT_PARAM_DESC              "desc"      /* UTF8_STRING */
 
-/*
- * Algorithm parameters
- * If "engine" or "properties" are specified, they should always be paired
- * with the algorithm type.
- * Note these are common names that are shared by many types (such as kdf, mac,
- * and pkey) e.g: see OSSL_MAC_PARAM_DIGEST below.
- */
+ /*
+  * Algorithm parameters
+  * If "engine" or "properties" are specified, they should always be paired
+  * with the algorithm type.
+  * Note these are common names that are shared by many types (such as kdf, mac,
+  * and pkey) e.g: see OSSL_MAC_PARAM_DIGEST below.
+  */
 #define OSSL_ALG_PARAM_DIGEST       "digest"    /* utf8_string */
 #define OSSL_ALG_PARAM_CIPHER       "cipher"    /* utf8_string */
 #define OSSL_ALG_PARAM_ENGINE       "engine"    /* utf8_string */
 #define OSSL_ALG_PARAM_MAC          "mac"       /* utf8_string */
 #define OSSL_ALG_PARAM_PROPERTIES   "properties"/* utf8_string */
 
-/* cipher parameters */
+  /* cipher parameters */
 #define OSSL_CIPHER_PARAM_PADDING              "padding"      /* uint */
 #define OSSL_CIPHER_PARAM_USE_BITS             "use-bits"     /* uint */
 #define OSSL_CIPHER_PARAM_TLS_VERSION          "tls-version"  /* uint */
@@ -176,7 +176,7 @@ extern "C" {
 #define OSSL_MAC_PARAM_BLOCK_SIZE       "block-size"              /* size_t */
 #define OSSL_MAC_PARAM_TLS_DATA_SIZE    "tls-data-size"           /* size_t */
 
-/* Known MAC names */
+ /* Known MAC names */
 #define OSSL_MAC_NAME_BLAKE2BMAC    "BLAKE2BMAC"
 #define OSSL_MAC_NAME_BLAKE2SMAC    "BLAKE2SMAC"
 #define OSSL_MAC_NAME_CMAC          "CMAC"
@@ -390,7 +390,7 @@ extern "C" {
 #define OSSL_PKEY_PARAM_RSA_COEFFICIENT8 OSSL_PKEY_PARAM_RSA_COEFFICIENT"8"
 #define OSSL_PKEY_PARAM_RSA_COEFFICIENT9 OSSL_PKEY_PARAM_RSA_COEFFICIENT"9"
 
-/* RSA padding modes */
+ /* RSA padding modes */
 #define OSSL_PKEY_RSA_PAD_MODE_NONE    "none"
 #define OSSL_PKEY_RSA_PAD_MODE_PKCSV15 "pkcs1"
 #define OSSL_PKEY_RSA_PAD_MODE_OAEP    "oaep"
@@ -478,7 +478,7 @@ extern "C" {
  */
 #define OSSL_ENCODER_PARAM_CIPHER           OSSL_ALG_PARAM_CIPHER
 #define OSSL_ENCODER_PARAM_PROPERTIES       OSSL_ALG_PARAM_PROPERTIES
-/* Currently PVK only, but reusable for others as needed */
+ /* Currently PVK only, but reusable for others as needed */
 #define OSSL_ENCODER_PARAM_ENCRYPT_LEVEL    "encrypt-level"
 #define OSSL_ENCODER_PARAM_SAVE_PARAMETERS  "save-parameters" /* integer */
 
@@ -528,19 +528,19 @@ extern "C" {
  * storemgmt parameters
  */
 
-/*
- * Used by storemgmt_ctx_set_params():
- *
- * - OSSL_STORE_PARAM_EXPECT is an INTEGER, and the value is any of the
- *   OSSL_STORE_INFO numbers.  This is used to set the expected type of
- *   object loaded.
- *
- * - OSSL_STORE_PARAM_SUBJECT, OSSL_STORE_PARAM_ISSUER,
- *   OSSL_STORE_PARAM_SERIAL, OSSL_STORE_PARAM_FINGERPRINT,
- *   OSSL_STORE_PARAM_DIGEST, OSSL_STORE_PARAM_ALIAS
- *   are used as search criteria.
- *   (OSSL_STORE_PARAM_DIGEST is used with OSSL_STORE_PARAM_FINGERPRINT)
- */
+ /*
+  * Used by storemgmt_ctx_set_params():
+  *
+  * - OSSL_STORE_PARAM_EXPECT is an INTEGER, and the value is any of the
+  *   OSSL_STORE_INFO numbers.  This is used to set the expected type of
+  *   object loaded.
+  *
+  * - OSSL_STORE_PARAM_SUBJECT, OSSL_STORE_PARAM_ISSUER,
+  *   OSSL_STORE_PARAM_SERIAL, OSSL_STORE_PARAM_FINGERPRINT,
+  *   OSSL_STORE_PARAM_DIGEST, OSSL_STORE_PARAM_ALIAS
+  *   are used as search criteria.
+  *   (OSSL_STORE_PARAM_DIGEST is used with OSSL_STORE_PARAM_FINGERPRINT)
+  */
 #define OSSL_STORE_PARAM_EXPECT     "expect"       /* INTEGER */
 #define OSSL_STORE_PARAM_SUBJECT    "subject" /* DER blob => OCTET_STRING */
 #define OSSL_STORE_PARAM_ISSUER     "name" /* DER blob => OCTET_STRING */
@@ -549,7 +549,7 @@ extern "C" {
 #define OSSL_STORE_PARAM_FINGERPRINT "fingerprint" /* OCTET_STRING */
 #define OSSL_STORE_PARAM_ALIAS      "alias"        /* UTF8_STRING */
 
-/* You may want to pass properties for the provider implementation to use */
+  /* You may want to pass properties for the provider implementation to use */
 #define OSSL_STORE_PARAM_PROPERTIES "properties"   /* utf8_string */
 /* OSSL_DECODER input type if a decoder is used by the store */
 #define OSSL_STORE_PARAM_INPUT_TYPE "input-type"   /* UTF8_STRING */

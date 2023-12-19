@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * PKCS7 reason codes.
- */
+ /*
+  * PKCS7 reason codes.
+  */
 # define PKCS7_R_CERTIFICATE_VERIFY_ERROR                 117
 # define PKCS7_R_CIPHER_HAS_NO_OBJECT_IDENTIFIER          144
 # define PKCS7_R_CIPHER_NOT_INITIALIZED                   116

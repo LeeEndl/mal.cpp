@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * ASN1 reason codes.
- */
+ /*
+  * ASN1 reason codes.
+  */
 # define ASN1_R_ADDING_OBJECT                             171
 # define ASN1_R_ASN1_PARSE_ERROR                          203
 # define ASN1_R_ASN1_SIG_PARSE_ERROR                      204

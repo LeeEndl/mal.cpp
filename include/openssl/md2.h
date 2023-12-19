@@ -28,25 +28,25 @@ extern "C" {
 
 #  if !defined(OPENSSL_NO_DEPRECATED_3_0)
 
-typedef unsigned char MD2_INT;
+	typedef unsigned char MD2_INT;
 
 #   define MD2_BLOCK               16
 
-typedef struct MD2state_st {
-    unsigned int num;
-    unsigned char data[MD2_BLOCK];
-    MD2_INT cksm[MD2_BLOCK];
-    MD2_INT state[MD2_BLOCK];
-} MD2_CTX;
+	typedef struct MD2state_st {
+		unsigned int num;
+		unsigned char data[MD2_BLOCK];
+		MD2_INT cksm[MD2_BLOCK];
+		MD2_INT state[MD2_BLOCK];
+	} MD2_CTX;
 #  endif
 #  ifndef OPENSSL_NO_DEPRECATED_3_0
-OSSL_DEPRECATEDIN_3_0 const char *MD2_options(void);
-OSSL_DEPRECATEDIN_3_0 int MD2_Init(MD2_CTX *c);
-OSSL_DEPRECATEDIN_3_0 int MD2_Update(MD2_CTX *c, const unsigned char *data,
-                                     size_t len);
-OSSL_DEPRECATEDIN_3_0 int MD2_Final(unsigned char *md, MD2_CTX *c);
-OSSL_DEPRECATEDIN_3_0 unsigned char *MD2(const unsigned char *d, size_t n,
-                                         unsigned char *md);
+	OSSL_DEPRECATEDIN_3_0 const char* MD2_options(void);
+	OSSL_DEPRECATEDIN_3_0 int MD2_Init(MD2_CTX* c);
+	OSSL_DEPRECATEDIN_3_0 int MD2_Update(MD2_CTX* c, const unsigned char* data,
+		size_t len);
+	OSSL_DEPRECATEDIN_3_0 int MD2_Final(unsigned char* md, MD2_CTX* c);
+	OSSL_DEPRECATEDIN_3_0 unsigned char* MD2(const unsigned char* d, size_t n,
+		unsigned char* md);
 #  endif
 
 #  ifdef  __cplusplus

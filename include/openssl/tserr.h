@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_TS
 
-
-/*
- * TS reason codes.
- */
+ /*
+  * TS reason codes.
+  */
 #  define TS_R_BAD_PKCS7_TYPE                              132
 #  define TS_R_BAD_TYPE                                    133
 #  define TS_R_CANNOT_LOAD_CERT                            137

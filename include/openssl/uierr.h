@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * UI reason codes.
- */
+ /*
+  * UI reason codes.
+  */
 # define UI_R_COMMON_OK_AND_CANCEL_CHARACTERS             104
 # define UI_R_INDEX_TOO_LARGE                             102
 # define UI_R_INDEX_TOO_SMALL                             103

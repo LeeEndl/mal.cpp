@@ -14,8 +14,7 @@
 #include <openssl/opensslconf.h>
 #include <openssl/opensslv.h>
 
-
-/* Helper macros for CPP string composition */
+ /* Helper macros for CPP string composition */
 # define OPENSSL_MSTR_HELPER(x) #x
 # define OPENSSL_MSTR(x) OPENSSL_MSTR_HELPER(x)
 
@@ -25,20 +24,20 @@
  */
 # define NON_EMPTY_TRANSLATION_UNIT static void *dummy = &dummy;
 
-/*
- * Generic deprecation macro
- *
- * If OPENSSL_SUPPRESS_DEPRECATED is defined, then OSSL_DEPRECATED and
- * OSSL_DEPRECATED_FOR become no-ops
- */
+ /*
+  * Generic deprecation macro
+  *
+  * If OPENSSL_SUPPRESS_DEPRECATED is defined, then OSSL_DEPRECATED and
+  * OSSL_DEPRECATED_FOR become no-ops
+  */
 # ifndef OSSL_DEPRECATED
 #  undef OSSL_DEPRECATED_FOR
 #  ifndef OPENSSL_SUPPRESS_DEPRECATED
 #   if defined(_MSC_VER)
-     /*
-      * MSVC supports __declspec(deprecated) since MSVC 2003 (13.10),
-      * and __declspec(deprecated(message)) since MSVC 2005 (14.00)
-      */
+  /*
+   * MSVC supports __declspec(deprecated) since MSVC 2003 (13.10),
+   * and __declspec(deprecated(message)) since MSVC 2005 (14.00)
+   */
 #    if _MSC_VER >= 1400
 #     define OSSL_DEPRECATED(since) \
           __declspec(deprecated("Since OpenSSL " # since))
@@ -49,10 +48,10 @@
 #     define OSSL_DEPRECATED_FOR(since, message) __declspec(deprecated)
 #    endif
 #   elif defined(__GNUC__)
-     /*
-      * According to GCC documentation, deprecations with message appeared in
-      * GCC 4.5.0
-      */
+  /*
+   * According to GCC documentation, deprecations with message appeared in
+   * GCC 4.5.0
+   */
 #    if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
 #     define OSSL_DEPRECATED(since) \
           __attribute__((deprecated("Since OpenSSL " # since)))
@@ -71,46 +70,46 @@
 #  endif
 # endif
 
-/*
- * Still not defined?  Then define no-op macros. This means these macros
- * are unsuitable for use in a typedef.
- */
+  /*
+   * Still not defined?  Then define no-op macros. This means these macros
+   * are unsuitable for use in a typedef.
+   */
 # ifndef OSSL_DEPRECATED
 #  define OSSL_DEPRECATED(since)                extern
 #  define OSSL_DEPRECATED_FOR(since, message)   extern
 # endif
 
-/*
- * Applications should use -DOPENSSL_API_COMPAT=<version> to suppress the
- * declarations of functions deprecated in or before <version>.  If this is
- * undefined, the value of the macro OPENSSL_CONFIGURED_API (defined in
- * <openssl/opensslconf.h>) is the default.
- *
- * For any version number up until version 1.1.x, <version> is expected to be
- * the calculated version number 0xMNNFFPPSL.
- * For version numbers 3.0 and on, <version> is expected to be a computation
- * of the major and minor numbers in decimal using this formula:
- *
- *     MAJOR * 10000 + MINOR * 100
- *
- * So version 3.0 becomes 30000, version 3.2 becomes 30200, etc.
- */
+   /*
+	* Applications should use -DOPENSSL_API_COMPAT=<version> to suppress the
+	* declarations of functions deprecated in or before <version>.  If this is
+	* undefined, the value of the macro OPENSSL_CONFIGURED_API (defined in
+	* <openssl/opensslconf.h>) is the default.
+	*
+	* For any version number up until version 1.1.x, <version> is expected to be
+	* the calculated version number 0xMNNFFPPSL.
+	* For version numbers 3.0 and on, <version> is expected to be a computation
+	* of the major and minor numbers in decimal using this formula:
+	*
+	*     MAJOR * 10000 + MINOR * 100
+	*
+	* So version 3.0 becomes 30000, version 3.2 becomes 30200, etc.
+	*/
 
-/*
- * We use the OPENSSL_API_COMPAT value to define API level macros.  These
- * macros are used to enable or disable features at that API version boundary.
- */
+	/*
+	 * We use the OPENSSL_API_COMPAT value to define API level macros.  These
+	 * macros are used to enable or disable features at that API version boundary.
+	 */
 
 # ifdef OPENSSL_API_LEVEL
 #  error "OPENSSL_API_LEVEL must not be defined by application"
 # endif
 
-/*
- * We figure out what API level was intended by simple numeric comparison.
- * The lowest old style number we recognise is 0x00908000L, so we take some
- * safety margin and assume that anything below 0x00900000L is a new style
- * number.  This allows new versions up to and including v943.71.83.
- */
+	 /*
+	  * We figure out what API level was intended by simple numeric comparison.
+	  * The lowest old style number we recognise is 0x00908000L, so we take some
+	  * safety margin and assume that anything below 0x00900000L is a new style
+	  * number.  This allows new versions up to and including v943.71.83.
+	  */
 # ifdef OPENSSL_API_COMPAT
 #  if OPENSSL_API_COMPAT < 0x900000L
 #   define OPENSSL_API_LEVEL (OPENSSL_API_COMPAT)
@@ -122,10 +121,10 @@
 #  endif
 # endif
 
-/*
- * If OPENSSL_API_COMPAT wasn't given, we use default numbers to set
- * the API compatibility level.
- */
+	  /*
+	   * If OPENSSL_API_COMPAT wasn't given, we use default numbers to set
+	   * the API compatibility level.
+	   */
 # ifndef OPENSSL_API_LEVEL
 #  if OPENSSL_CONFIGURED_API > 0
 #   define OPENSSL_API_LEVEL (OPENSSL_CONFIGURED_API)
@@ -139,10 +138,10 @@
 #  error "The requested API level higher than the configured API compatibility level"
 # endif
 
-/*
- * Check of sane values.
- */
-/* Can't go higher than the current version. */
+	   /*
+		* Check of sane values.
+		*/
+		/* Can't go higher than the current version. */
 # if OPENSSL_API_LEVEL > (OPENSSL_VERSION_MAJOR * 10000 + OPENSSL_VERSION_MINOR * 100)
 #  error "OPENSSL_API_COMPAT expresses an impossible API compatibility level"
 # endif
@@ -266,9 +265,9 @@
 #  define OSSL_DEPRECATEDIN_0_9_8_FOR(msg)
 # endif
 
-/*
- * Make our own variants of __FILE__ and __LINE__, depending on configuration
- */
+ /*
+  * Make our own variants of __FILE__ and __LINE__, depending on configuration
+  */
 
 # ifndef OPENSSL_FILE
 #  ifdef OPENSSL_NO_FILENAMES
@@ -280,19 +279,19 @@
 #  endif
 # endif
 
-/*
- * __func__ was standardized in C99, so for any compiler that claims
- * to implement that language level or newer, we assume we can safely
- * use that symbol.
- *
- * GNU C also provides __FUNCTION__ since version 2, which predates
- * C99.  We can, however, only use this if __STDC_VERSION__ exists,
- * as it's otherwise not allowed according to ISO C standards (C90).
- * (compiling with GNU C's -pedantic tells us so)
- *
- * If none of the above applies, we check if the compiler is MSVC,
- * and use __FUNCTION__ if that's the case.
- */
+  /*
+   * __func__ was standardized in C99, so for any compiler that claims
+   * to implement that language level or newer, we assume we can safely
+   * use that symbol.
+   *
+   * GNU C also provides __FUNCTION__ since version 2, which predates
+   * C99.  We can, however, only use this if __STDC_VERSION__ exists,
+   * as it's otherwise not allowed according to ISO C standards (C90).
+   * (compiling with GNU C's -pedantic tells us so)
+   *
+   * If none of the above applies, we check if the compiler is MSVC,
+   * and use __FUNCTION__ if that's the case.
+   */
 # ifndef OPENSSL_FUNC
 #  if defined(__STDC_VERSION__)
 #   if __STDC_VERSION__ >= 199901L
@@ -303,10 +302,10 @@
 #  elif defined(_MSC_VER)
 #    define OPENSSL_FUNC __FUNCTION__
 #  endif
-/*
- * If all these possibilities are exhausted, we give up and use a
- * static string.
- */
+   /*
+	* If all these possibilities are exhausted, we give up and use a
+	* static string.
+	*/
 #  ifndef OPENSSL_FUNC
 #   define OPENSSL_FUNC "(unknown function)"
 #  endif

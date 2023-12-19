@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_CMP
 
-
-/*
- * CMP reason codes.
- */
+ /*
+  * CMP reason codes.
+  */
 #  define CMP_R_ALGORITHM_NOT_SUPPORTED                    139
 #  define CMP_R_BAD_CHECKAFTER_IN_POLLREP                  167
 #  define CMP_R_BAD_REQUEST_ID                             108

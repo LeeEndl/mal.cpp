@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_COMP
 
-
-/*
- * COMP reason codes.
- */
+ /*
+  * COMP reason codes.
+  */
 #  define COMP_R_ZLIB_DEFLATE_ERROR                        99
 #  define COMP_R_ZLIB_INFLATE_ERROR                        100
 #  define COMP_R_ZLIB_NOT_SUPPORTED                        101

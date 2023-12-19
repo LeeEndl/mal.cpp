@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_EC
 
-
-/*
- * EC reason codes.
- */
+ /*
+  * EC reason codes.
+  */
 #  define EC_R_ASN1_ERROR                                  115
 #  define EC_R_BAD_SIGNATURE                               156
 #  define EC_R_BIGNUM_OUT_OF_RANGE                         144

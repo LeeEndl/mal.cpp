@@ -7,11 +7,9 @@
  * https://www.openssl.org/source/license.html
  */
 
-
-
-/*
- * Header for dynamic hash table routines Author - Eric Young
- */
+ /*
+  * Header for dynamic hash table routines Author - Eric Young
+  */
 
 #ifndef OPENSSL_LHASH_H
 # define OPENSSL_LHASH_H
@@ -32,23 +30,23 @@
 extern "C" {
 #endif
 
-typedef struct lhash_node_st OPENSSL_LH_NODE;
-typedef int (*OPENSSL_LH_COMPFUNC) (const void *, const void *);
-typedef unsigned long (*OPENSSL_LH_HASHFUNC) (const void *);
-typedef void (*OPENSSL_LH_DOALL_FUNC) (void *);
-typedef void (*OPENSSL_LH_DOALL_FUNCARG) (void *, void *);
-typedef struct lhash_st OPENSSL_LHASH;
+	typedef struct lhash_node_st OPENSSL_LH_NODE;
+	typedef int (*OPENSSL_LH_COMPFUNC) (const void*, const void*);
+	typedef unsigned long (*OPENSSL_LH_HASHFUNC) (const void*);
+	typedef void (*OPENSSL_LH_DOALL_FUNC) (void*);
+	typedef void (*OPENSSL_LH_DOALL_FUNCARG) (void*, void*);
+	typedef struct lhash_st OPENSSL_LHASH;
 
-/*
- * Macros for declaring and implementing type-safe wrappers for LHASH
- * callbacks. This way, callbacks can be provided to LHASH structures without
- * function pointer casting and the macro-defined callbacks provide
- * per-variable casting before deferring to the underlying type-specific
- * callbacks. NB: It is possible to place a "static" in front of both the
- * DECLARE and IMPLEMENT macros if the functions are strictly internal.
- */
+	/*
+	 * Macros for declaring and implementing type-safe wrappers for LHASH
+	 * callbacks. This way, callbacks can be provided to LHASH structures without
+	 * function pointer casting and the macro-defined callbacks provide
+	 * per-variable casting before deferring to the underlying type-specific
+	 * callbacks. NB: It is possible to place a "static" in front of both the
+	 * DECLARE and IMPLEMENT macros if the functions are strictly internal.
+	 */
 
-/* First: "hash" functions */
+	 /* First: "hash" functions */
 # define DECLARE_LHASH_HASH_FN(name, o_type) \
         unsigned long name##_LHASH_HASH(const void *);
 # define IMPLEMENT_LHASH_HASH_FN(name, o_type) \
@@ -77,34 +75,33 @@ typedef struct lhash_st OPENSSL_LHASH;
                 name##_doall_arg(a, b); }
 # define LHASH_DOALL_ARG_FN(name) name##_LHASH_DOALL_ARG
 
-
 # define LH_LOAD_MULT    256
 
-int OPENSSL_LH_error(OPENSSL_LHASH *lh);
-OPENSSL_LHASH *OPENSSL_LH_new(OPENSSL_LH_HASHFUNC h, OPENSSL_LH_COMPFUNC c);
-void OPENSSL_LH_free(OPENSSL_LHASH *lh);
-void OPENSSL_LH_flush(OPENSSL_LHASH *lh);
-void *OPENSSL_LH_insert(OPENSSL_LHASH *lh, void *data);
-void *OPENSSL_LH_delete(OPENSSL_LHASH *lh, const void *data);
-void *OPENSSL_LH_retrieve(OPENSSL_LHASH *lh, const void *data);
-void OPENSSL_LH_doall(OPENSSL_LHASH *lh, OPENSSL_LH_DOALL_FUNC func);
-void OPENSSL_LH_doall_arg(OPENSSL_LHASH *lh, OPENSSL_LH_DOALL_FUNCARG func, void *arg);
-unsigned long OPENSSL_LH_strhash(const char *c);
-unsigned long OPENSSL_LH_num_items(const OPENSSL_LHASH *lh);
-unsigned long OPENSSL_LH_get_down_load(const OPENSSL_LHASH *lh);
-void OPENSSL_LH_set_down_load(OPENSSL_LHASH *lh, unsigned long down_load);
+	int OPENSSL_LH_error(OPENSSL_LHASH* lh);
+	OPENSSL_LHASH* OPENSSL_LH_new(OPENSSL_LH_HASHFUNC h, OPENSSL_LH_COMPFUNC c);
+	void OPENSSL_LH_free(OPENSSL_LHASH* lh);
+	void OPENSSL_LH_flush(OPENSSL_LHASH* lh);
+	void* OPENSSL_LH_insert(OPENSSL_LHASH* lh, void* data);
+	void* OPENSSL_LH_delete(OPENSSL_LHASH* lh, const void* data);
+	void* OPENSSL_LH_retrieve(OPENSSL_LHASH* lh, const void* data);
+	void OPENSSL_LH_doall(OPENSSL_LHASH* lh, OPENSSL_LH_DOALL_FUNC func);
+	void OPENSSL_LH_doall_arg(OPENSSL_LHASH* lh, OPENSSL_LH_DOALL_FUNCARG func, void* arg);
+	unsigned long OPENSSL_LH_strhash(const char* c);
+	unsigned long OPENSSL_LH_num_items(const OPENSSL_LHASH* lh);
+	unsigned long OPENSSL_LH_get_down_load(const OPENSSL_LHASH* lh);
+	void OPENSSL_LH_set_down_load(OPENSSL_LHASH* lh, unsigned long down_load);
 
 # ifndef OPENSSL_NO_STDIO
 #  ifndef OPENSSL_NO_DEPRECATED_3_1
-OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_stats(const OPENSSL_LHASH *lh, FILE *fp);
-OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_stats(const OPENSSL_LHASH *lh, FILE *fp);
-OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_usage_stats(const OPENSSL_LHASH *lh, FILE *fp);
+	OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_stats(const OPENSSL_LHASH* lh, FILE* fp);
+	OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_stats(const OPENSSL_LHASH* lh, FILE* fp);
+	OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_usage_stats(const OPENSSL_LHASH* lh, FILE* fp);
 #  endif
 # endif
 # ifndef OPENSSL_NO_DEPRECATED_3_1
-OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_stats_bio(const OPENSSL_LHASH *lh, BIO *out);
-OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_stats_bio(const OPENSSL_LHASH *lh, BIO *out);
-OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_usage_stats_bio(const OPENSSL_LHASH *lh, BIO *out);
+	OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_stats_bio(const OPENSSL_LHASH* lh, BIO* out);
+	OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_stats_bio(const OPENSSL_LHASH* lh, BIO* out);
+	OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_usage_stats_bio(const OPENSSL_LHASH* lh, BIO* out);
 # endif
 
 # ifndef OPENSSL_NO_DEPRECATED_1_1_0
@@ -130,7 +127,7 @@ OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_usage_stats_bio(const OPENSSL_LHASH *
 #  define lh_node_usage_stats_bio OPENSSL_LH_node_usage_stats_bio
 # endif
 
-/* Type checking... */
+	/* Type checking... */
 
 # define LHASH_OF(type) struct lhash_st_##type
 
@@ -292,7 +289,7 @@ OSSL_DEPRECATEDIN_3_1 void OPENSSL_LH_node_usage_stats_bio(const OPENSSL_LHASH *
     } \
     LHASH_OF(type)
 
-DEFINE_LHASH_OF_INTERNAL(OPENSSL_STRING);
+	DEFINE_LHASH_OF_INTERNAL(OPENSSL_STRING);
 #define lh_OPENSSL_STRING_new(hfn, cmp) ((LHASH_OF(OPENSSL_STRING) *)OPENSSL_LH_new(ossl_check_OPENSSL_STRING_lh_hashfunc_type(hfn), ossl_check_OPENSSL_STRING_lh_compfunc_type(cmp)))
 #define lh_OPENSSL_STRING_free(lh) OPENSSL_LH_free(ossl_check_OPENSSL_STRING_lh_type(lh))
 #define lh_OPENSSL_STRING_flush(lh) OPENSSL_LH_flush(ossl_check_OPENSSL_STRING_lh_type(lh))
@@ -307,7 +304,7 @@ DEFINE_LHASH_OF_INTERNAL(OPENSSL_STRING);
 #define lh_OPENSSL_STRING_get_down_load(lh) OPENSSL_LH_get_down_load(ossl_check_OPENSSL_STRING_lh_type(lh))
 #define lh_OPENSSL_STRING_set_down_load(lh, dl) OPENSSL_LH_set_down_load(ossl_check_OPENSSL_STRING_lh_type(lh), dl)
 #define lh_OPENSSL_STRING_doall(lh, dfn) OPENSSL_LH_doall(ossl_check_OPENSSL_STRING_lh_type(lh), ossl_check_OPENSSL_STRING_lh_doallfunc_type(dfn))
-DEFINE_LHASH_OF_INTERNAL(OPENSSL_CSTRING);
+	DEFINE_LHASH_OF_INTERNAL(OPENSSL_CSTRING);
 #define lh_OPENSSL_CSTRING_new(hfn, cmp) ((LHASH_OF(OPENSSL_CSTRING) *)OPENSSL_LH_new(ossl_check_OPENSSL_CSTRING_lh_hashfunc_type(hfn), ossl_check_OPENSSL_CSTRING_lh_compfunc_type(cmp)))
 #define lh_OPENSSL_CSTRING_free(lh) OPENSSL_LH_free(ossl_check_OPENSSL_CSTRING_lh_type(lh))
 #define lh_OPENSSL_CSTRING_flush(lh) OPENSSL_LH_flush(ossl_check_OPENSSL_CSTRING_lh_type(lh))
@@ -322,7 +319,6 @@ DEFINE_LHASH_OF_INTERNAL(OPENSSL_CSTRING);
 #define lh_OPENSSL_CSTRING_get_down_load(lh) OPENSSL_LH_get_down_load(ossl_check_OPENSSL_CSTRING_lh_type(lh))
 #define lh_OPENSSL_CSTRING_set_down_load(lh, dl) OPENSSL_LH_set_down_load(ossl_check_OPENSSL_CSTRING_lh_type(lh), dl)
 #define lh_OPENSSL_CSTRING_doall(lh, dfn) OPENSSL_LH_doall(ossl_check_OPENSSL_CSTRING_lh_type(lh), ossl_check_OPENSSL_CSTRING_lh_doallfunc_type(dfn))
-
 
 #ifdef  __cplusplus
 }

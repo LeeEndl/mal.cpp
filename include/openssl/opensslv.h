@@ -18,27 +18,27 @@
 extern "C" {
 # endif
 
-/*
- * SECTION 1: VERSION DATA.  These will change for each release
- */
+	/*
+	 * SECTION 1: VERSION DATA.  These will change for each release
+	 */
 
-/*
- * Base version macros
- *
- * These macros express version number MAJOR.MINOR.PATCH exactly
- */
+	 /*
+	  * Base version macros
+	  *
+	  * These macros express version number MAJOR.MINOR.PATCH exactly
+	  */
 # define OPENSSL_VERSION_MAJOR  3
 # define OPENSSL_VERSION_MINOR  1
 # define OPENSSL_VERSION_PATCH  4
 
-/*
- * Additional version information
- *
- * These are also part of the new version scheme, but aren't part
- * of the version number itself.
- */
+	  /*
+	   * Additional version information
+	   *
+	   * These are also part of the new version scheme, but aren't part
+	   * of the version number itself.
+	   */
 
-/* Could be: #define OPENSSL_VERSION_PRE_RELEASE "-alpha.1" */
+	   /* Could be: #define OPENSSL_VERSION_PRE_RELEASE "-alpha.1" */
 # define OPENSSL_VERSION_PRE_RELEASE ""
 /* Could be: #define OPENSSL_VERSION_BUILD_METADATA "+fips" */
 /* Could be: #define OPENSSL_VERSION_BUILD_METADATA "+vendor.1" */
@@ -50,20 +50,20 @@ extern "C" {
  * others
  */
 
-/*
- * Shared library version
- *
- * This is strictly to express ABI version, which may or may not
- * be related to the API version expressed with the macros above.
- * This is defined in free form.
- */
+ /*
+  * Shared library version
+  *
+  * This is strictly to express ABI version, which may or may not
+  * be related to the API version expressed with the macros above.
+  * This is defined in free form.
+  */
 # define OPENSSL_SHLIB_VERSION 3
 
-/*
- * SECTION 2: USEFUL MACROS
- */
+  /*
+   * SECTION 2: USEFUL MACROS
+   */
 
-/* For checking general API compatibility when preprocessing */
+   /* For checking general API compatibility when preprocessing */
 # define OPENSSL_VERSION_PREREQ(maj,min)                                \
     ((OPENSSL_VERSION_MAJOR << 16) + OPENSSL_VERSION_MINOR >= ((maj) << 16) + (min))
 
@@ -77,20 +77,20 @@ extern "C" {
 # define OPENSSL_VERSION_STR "3.1.4"
 # define OPENSSL_FULL_VERSION_STR "3.1.4"
 
-/*
- * SECTION 3: ADDITIONAL METADATA
- *
- * These strings are defined separately to allow them to be parsable.
- */
+ /*
+  * SECTION 3: ADDITIONAL METADATA
+  *
+  * These strings are defined separately to allow them to be parsable.
+  */
 # define OPENSSL_RELEASE_DATE "24 Oct 2023"
 
-/*
- * SECTION 4: BACKWARD COMPATIBILITY
- */
+  /*
+   * SECTION 4: BACKWARD COMPATIBILITY
+   */
 
 # define OPENSSL_VERSION_TEXT "OpenSSL 3.1.4 24 Oct 2023"
 
-/* Synthesize OPENSSL_VERSION_NUMBER with the layout 0xMNN00PPSL */
+   /* Synthesize OPENSSL_VERSION_NUMBER with the layout 0xMNN00PPSL */
 # ifdef OPENSSL_VERSION_PRE_RELEASE
 #  define _OPENSSL_VERSION_PRE_RELEASE 0x0L
 # else

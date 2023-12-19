@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * RAND reason codes.
- */
+ /*
+  * RAND reason codes.
+  */
 # define RAND_R_ADDITIONAL_INPUT_TOO_LONG                 102
 # define RAND_R_ALREADY_INSTANTIATED                      103
 # define RAND_R_ARGUMENT_OUT_OF_RANGE                     105

@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * PROV reason codes.
- */
+ /*
+  * PROV reason codes.
+  */
 # define PROV_R_ADDITIONAL_INPUT_TOO_LONG                 184
 # define PROV_R_ALGORITHM_MISMATCH                        173
 # define PROV_R_ALREADY_INSTANTIATED                      185

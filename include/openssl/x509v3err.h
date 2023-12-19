@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * X509V3 reason codes.
- */
+ /*
+  * X509V3 reason codes.
+  */
 # define X509V3_R_BAD_IP_ADDRESS                          118
 # define X509V3_R_BAD_OBJECT                              119
 # define X509V3_R_BN_DEC2BN_ERROR                         100

@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * BN reason codes.
- */
+ /*
+  * BN reason codes.
+  */
 # define BN_R_ARG2_LT_ARG3                                100
 # define BN_R_BAD_RECIPROCAL                              101
 # define BN_R_BIGNUM_TOO_LONG                             114

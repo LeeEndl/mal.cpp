@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * CRYPTO reason codes.
- */
+ /*
+  * CRYPTO reason codes.
+  */
 # define CRYPTO_R_BAD_ALGORITHM_NAME                      117
 # define CRYPTO_R_CONFLICTING_NAMES                       118
 # define CRYPTO_R_HEX_STRING_TOO_SHORT                    121

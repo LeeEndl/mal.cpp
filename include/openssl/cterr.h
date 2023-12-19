@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_CT
 
-
-/*
- * CT reason codes.
- */
+ /*
+  * CT reason codes.
+  */
 #  define CT_R_BASE64_DECODE_ERROR                         108
 #  define CT_R_INVALID_LOG_ID_LENGTH                       100
 #  define CT_R_LOG_CONF_INVALID                            109

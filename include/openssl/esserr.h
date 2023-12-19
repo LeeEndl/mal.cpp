@@ -16,9 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-/*
- * ESS reason codes.
- */
+ /*
+  * ESS reason codes.
+  */
 # define ESS_R_EMPTY_ESS_CERT_ID_LIST                     107
 # define ESS_R_ESS_CERT_DIGEST_ERROR                      103
 # define ESS_R_ESS_CERT_ID_NOT_FOUND                      104

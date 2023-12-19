@@ -7,12 +7,12 @@
  * https://www.openssl.org/source/license.html
  */
 
-/*
- * This header file preserves symbols from pre-3.0 OpenSSL.
- * It should never be included directly, as it's already included
- * by the public sslerr.h headers, and since it will go away some
- * time in the future.
- */
+ /*
+  * This header file preserves symbols from pre-3.0 OpenSSL.
+  * It should never be included directly, as it's already included
+  * by the public sslerr.h headers, and since it will go away some
+  * time in the future.
+  */
 
 #ifndef OPENSSL_SSLERR_LEGACY_H
 # define OPENSSL_SSLERR_LEGACY_H
@@ -26,13 +26,13 @@ extern "C" {
 # endif
 
 # ifndef OPENSSL_NO_DEPRECATED_3_0
-OSSL_DEPRECATEDIN_3_0 int ERR_load_SSL_strings(void);
+	OSSL_DEPRECATEDIN_3_0 int ERR_load_SSL_strings(void);
 
-/* Collected _F_ macros from OpenSSL 1.1.1 */
+	/* Collected _F_ macros from OpenSSL 1.1.1 */
 
-/*
- * SSL function codes.
- */
+	/*
+	 * SSL function codes.
+	 */
 #  define SSL_F_ADD_CLIENT_KEY_SHARE_EXT                   0
 #  define SSL_F_ADD_KEY_SHARE                              0
 #  define SSL_F_BYTES_TO_CIPHER_LIST                       0

@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <mal/jikan_cert.hpp>
 
-std::string replace(const std::string& str, char replace, std::string with) noexcept {
+std::string replace(const std::string& str, char replace, const std::string& with) noexcept {
 	std::stringstream mstr{};
 	for (const char& c : str)
 		(c == replace) ? mstr << with : mstr << c;
@@ -55,7 +55,7 @@ namespace mal {
 		std::string synopsis{}; /* about the anime. */
 		std::string background{}; /* about the production. */
 
-		anime(const nlohmann::json& j) noexcept {
+		explicit anime(const nlohmann::json& j) noexcept {
 			this->mal_id = is_null<short>(j["mal_id"]);
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
 				this->image.push_back(is_null<std::string>(j["images"]["jpg"][size]));
@@ -106,7 +106,7 @@ namespace mal {
 		int favorites{}; /* total favorites. */
 		std::string synopsis{}; /* about the manga. */
 		std::string background{}; /* about the production. */
-		manga(const nlohmann::json& j) noexcept {
+		explicit manga(const nlohmann::json& j) noexcept {
 			this->mal_id = is_null<int>(j["mal_id"]);
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
 				this->image.push_back(is_null<std::string>(j["images"]["jpg"][size]));

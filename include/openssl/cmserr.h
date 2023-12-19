@@ -16,13 +16,11 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
 # ifndef OPENSSL_NO_CMS
 
-
-/*
- * CMS reason codes.
- */
+ /*
+  * CMS reason codes.
+  */
 #  define CMS_R_ADD_SIGNER_ERROR                           99
 #  define CMS_R_ATTRIBUTE_ERROR                            161
 #  define CMS_R_CERTIFICATE_ALREADY_PRESENT                175

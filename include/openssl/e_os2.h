@@ -22,32 +22,32 @@
 extern "C" {
 #endif
 
-/******************************************************************************
- * Detect operating systems.  This probably needs completing.
- * The result is that at least one OPENSSL_SYS_os macro should be defined.
- * However, if none is defined, Unix is assumed.
- **/
+	/******************************************************************************
+	 * Detect operating systems.  This probably needs completing.
+	 * The result is that at least one OPENSSL_SYS_os macro should be defined.
+	 * However, if none is defined, Unix is assumed.
+	 **/
 
 # define OPENSSL_SYS_UNIX
 
-/* --------------------- Microsoft operating systems ---------------------- */
+	 /* --------------------- Microsoft operating systems ---------------------- */
 
-/*
- * Note that MSDOS actually denotes 32-bit environments running on top of
- * MS-DOS, such as DJGPP one.
- */
+	 /*
+	  * Note that MSDOS actually denotes 32-bit environments running on top of
+	  * MS-DOS, such as DJGPP one.
+	  */
 # if defined(OPENSSL_SYS_MSDOS)
 #  undef OPENSSL_SYS_UNIX
 # endif
 
-/*
- * For 32 bit environment, there seems to be the CygWin environment and then
- * all the others that try to do the same thing Microsoft does...
- */
-/*
- * UEFI lives here because it might be built with a Microsoft toolchain and
- * we need to avoid the false positive match on Windows.
- */
+	  /*
+	   * For 32 bit environment, there seems to be the CygWin environment and then
+	   * all the others that try to do the same thing Microsoft does...
+	   */
+	   /*
+		* UEFI lives here because it might be built with a Microsoft toolchain and
+		* we need to avoid the false positive match on Windows.
+		*/
 # if defined(OPENSSL_SYS_UEFI)
 #  undef OPENSSL_SYS_UNIX
 # elif defined(OPENSSL_SYS_UWIN)
@@ -78,7 +78,7 @@ extern "C" {
 #  endif
 # endif
 
-/* Anything that tries to look like Microsoft is "Windows" */
+		/* Anything that tries to look like Microsoft is "Windows" */
 # if defined(OPENSSL_SYS_WIN32) || defined(OPENSSL_SYS_WIN64) || defined(OPENSSL_SYS_WINNT) || defined(OPENSSL_SYS_WINCE)
 #  undef OPENSSL_SYS_UNIX
 #  define OPENSSL_SYS_WINDOWS
@@ -95,13 +95,13 @@ extern "C" {
 # ifdef OPENSSL_SYS_WINDOWS
 #  ifndef OPENSSL_OPT_WINDLL
 #   if defined(_WINDLL)         /* This is used when building OpenSSL to
-                                 * indicate that DLL linkage should be used */
+								 * indicate that DLL linkage should be used */
 #    define OPENSSL_OPT_WINDLL
 #   endif
 #  endif
 # endif
 
-/* ------------------------------- OpenVMS -------------------------------- */
+								 /* ------------------------------- OpenVMS -------------------------------- */
 # if defined(__VMS) || defined(VMS)
 #  if !defined(OPENSSL_SYS_VMS)
 #   undef OPENSSL_SYS_UNIX
@@ -157,24 +157,24 @@ extern "C" {
  * That's it for OS-specific stuff
  *****************************************************************************/
 
-/*-
- * OPENSSL_EXTERN is normally used to declare a symbol with possible extra
- * attributes to handle its presence in a shared library.
- * OPENSSL_EXPORT is used to define a symbol with extra possible attributes
- * to make it visible in a shared library.
- * Care needs to be taken when a header file is used both to declare and
- * define symbols.  Basically, for any library that exports some global
- * variables, the following code must be present in the header file that
- * declares them, before OPENSSL_EXTERN is used:
- *
- * #ifdef SOME_BUILD_FLAG_MACRO
- * # undef OPENSSL_EXTERN
- * # define OPENSSL_EXTERN OPENSSL_EXPORT
- * #endif
- *
- * The default is to have OPENSSL_EXPORT and OPENSSL_EXTERN
- * have some generally sensible values.
- */
+ /*-
+  * OPENSSL_EXTERN is normally used to declare a symbol with possible extra
+  * attributes to handle its presence in a shared library.
+  * OPENSSL_EXPORT is used to define a symbol with extra possible attributes
+  * to make it visible in a shared library.
+  * Care needs to be taken when a header file is used both to declare and
+  * define symbols.  Basically, for any library that exports some global
+  * variables, the following code must be present in the header file that
+  * declares them, before OPENSSL_EXTERN is used:
+  *
+  * #ifdef SOME_BUILD_FLAG_MACRO
+  * # undef OPENSSL_EXTERN
+  * # define OPENSSL_EXTERN OPENSSL_EXPORT
+  * #endif
+  *
+  * The default is to have OPENSSL_EXPORT and OPENSSL_EXTERN
+  * have some generally sensible values.
+  */
 
 # if defined(OPENSSL_SYS_WINDOWS) && defined(OPENSSL_OPT_WINDLL)
 #  define OPENSSL_EXPORT extern __declspec(dllexport)
@@ -216,18 +216,18 @@ extern "C" {
 #  define __owur
 # endif
 
-/* Standard integer types */
+  /* Standard integer types */
 # define OPENSSL_NO_INTTYPES_H
 # define OPENSSL_NO_STDINT_H
 # if defined(OPENSSL_SYS_UEFI)
-typedef INT8 int8_t;
-typedef UINT8 uint8_t;
-typedef INT16 int16_t;
-typedef UINT16 uint16_t;
-typedef INT32 int32_t;
-typedef UINT32 uint32_t;
-typedef INT64 int64_t;
-typedef UINT64 uint64_t;
+	typedef INT8 int8_t;
+	typedef UINT8 uint8_t;
+	typedef INT16 int16_t;
+	typedef UINT16 uint16_t;
+	typedef INT32 int32_t;
+	typedef UINT32 uint32_t;
+	typedef INT64 int64_t;
+	typedef UINT64 uint64_t;
 # elif (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
      defined(__osf__) || defined(__sgi) || defined(__hpux) || \
      defined(OPENSSL_SYS_VMS) || defined (__OpenBSD__)
@@ -240,14 +240,14 @@ typedef UINT64 uint64_t;
  * minimally required typdefs for systems not supporting inttypes.h or
  * stdint.h: currently just older VC++
  */
-typedef signed char int8_t;
-typedef unsigned char uint8_t;
-typedef short int16_t;
-typedef unsigned short uint16_t;
-typedef int int32_t;
-typedef unsigned int uint32_t;
-typedef __int64 int64_t;
-typedef unsigned __int64 uint64_t;
+	typedef signed char int8_t;
+	typedef unsigned char uint8_t;
+	typedef short int16_t;
+	typedef unsigned short uint16_t;
+	typedef int int32_t;
+	typedef unsigned int uint32_t;
+	typedef __int64 int64_t;
+	typedef unsigned __int64 uint64_t;
 # elif defined(OPENSSL_SYS_TANDEM)
 #  include <stdint.h>
 #  include <sys/types.h>
@@ -257,15 +257,15 @@ typedef unsigned __int64 uint64_t;
 # endif
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L && \
     defined(INTMAX_MAX) && defined(UINTMAX_MAX)
-typedef intmax_t ossl_intmax_t;
-typedef uintmax_t ossl_uintmax_t;
+	typedef intmax_t ossl_intmax_t;
+	typedef uintmax_t ossl_uintmax_t;
 # else
 /* Fall back to the largest we know we require and can handle */
-typedef int64_t ossl_intmax_t;
-typedef uint64_t ossl_uintmax_t;
+	typedef int64_t ossl_intmax_t;
+	typedef uint64_t ossl_uintmax_t;
 # endif
 
-/* ossl_inline: portable inline definition usable in public headers */
+	/* ossl_inline: portable inline definition usable in public headers */
 # if !defined(inline) && !defined(__cplusplus)
 #  if defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
    /* just use inline */
@@ -287,7 +287,7 @@ typedef uint64_t ossl_uintmax_t;
 # endif
 
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
-     !defined(__cplusplus) 
+     !defined(__cplusplus)
 #  define ossl_noreturn _Noreturn
 # elif defined(__GNUC__) && __GNUC__ >= 2
 #  define ossl_noreturn __attribute__((noreturn))

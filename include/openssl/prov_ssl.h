@@ -15,7 +15,7 @@
 extern "C" {
 # endif
 
-/* SSL/TLS related defines useful to providers */
+	/* SSL/TLS related defines useful to providers */
 
 # define SSL_MAX_MASTER_KEY_LENGTH 48
 

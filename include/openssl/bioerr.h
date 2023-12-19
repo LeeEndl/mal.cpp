@@ -16,11 +16,9 @@
 # include <openssl/symhacks.h>
 # include <openssl/cryptoerr_legacy.h>
 
-
-
-/*
- * BIO reason codes.
- */
+ /*
+  * BIO reason codes.
+  */
 # define BIO_R_ACCEPT_ERROR                               100
 # define BIO_R_ADDRINFO_ADDR_IS_NOT_AF_INET               141
 # define BIO_R_AMBIGUOUS_HOST_OR_SERVICE                  129
