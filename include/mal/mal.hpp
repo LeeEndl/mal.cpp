@@ -154,21 +154,21 @@ namespace mal {
 			SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, NULL);
 			BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, (char*)"api.jikan.moe:https");
 			std::stringstream request;
-			request << "GET /v4/" << classless << "?q=\"" << replace(name, ' ', "%20") << "\"&limit=" << ((results < 25) ? results : 25) << "&page=" << page << " HTTP/1.1\x0D\x0AHost: api.jikan.moe\x0D\x0A\x43onnection: Close\x0D\x0A\x0D\x0A";
+			request << "GET /v4/" << classless << "?q=\"" << replace(name, ' ', "%20") << "\"&limit=" << ((results < 25) ? results : 25) << "&page=" << page << " HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n";
 			BIO_puts(bio.get(), request.str().c_str());
 			std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
 			all_data->reserve(2048);
 			std::unique_ptr<char[]> temp = std::make_unique<char[]>(2048);
-			bool header_end{};
+			bool once{};
 			int r{};
 			while ((r = BIO_read(bio.get(), temp.get(), sizeof(temp) - 1)) > 0) {
 				temp[r] = '\0';
 
-				if (not header_end) {
+				if (not once) {
 					all_data->append(temp.get());
 					if (all_data->find("\r\n\r\n") not_eq -1) {
 						all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
-						header_end = true;
+						once = true;
 					}
 				}
 				else
@@ -181,7 +181,7 @@ namespace mal {
 			all_data->clear();
 			if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
 			for (const nlohmann::json& data : (*j)["data"])
-				callback(std::move(T(data)));
+				callback(T(data));
 		}
 		OPENSSL_cleanup();
 	}
