@@ -4,7 +4,6 @@
 #include <openssl/ssl.h>
 #include <openssl/bio.h>
 #include <nlohmann/json.hpp>
-#include <mal/jikan_cert.hpp>
 
 std::string replace(const std::string& str, char replace, const std::string& with) noexcept {
 	std::stringstream mstr{};
@@ -17,6 +16,8 @@ template<typename T> T is_null(const nlohmann::json& j) noexcept {
 	if (j.is_null()) return {};
 	return j.get<T>();
 }
+
+using bio_callback = std::unique_ptr<BIO, decltype(&::BIO_free_all)>&; // fluent coding
 
 namespace mal {
 	enum image_size {
@@ -132,6 +133,30 @@ namespace mal {
 		constexpr ~manga() = default;
 	};
 
+	/* no handshake nor connection */
+	void request(std::function<void(bio_callback)> callback) {
+		std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
+		std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
+		SSL* ssl{};
+		BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, (char*)&ssl);
+		SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, NULL);
+		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, (char*)"api.jikan.moe:https");
+		callback(bio);
+	}
+
+	/* API response time. via /v4/...
+	 * @return response time in seconds
+	*/
+	double api_palse() {
+		std::chrono::steady_clock::time_point end;
+		std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
+		request([&start, &end](bio_callback bio) {
+			BIO_puts(bio.get(), "GET /v4/ HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n");
+			end = std::chrono::high_resolution_clock::now();
+			});
+		return std::chrono::duration<double>(end - start).count();
+	}
+
 	/* a basic GET search on http://myanimelist.net/
 	 * support spaces, mis-spelling. however this is not enhanced; wrong result is possible.
 	 * @param name this can be any string type, long as it supports std::format()
@@ -145,44 +170,38 @@ namespace mal {
 		if (classless.find("anime") not_eq -1) classless = "anime";
 		else if (classless.find("manga") not_eq -1) classless = "manga";
 		else return;
-		OPENSSL_init_ssl(0, NULL);
-		for (short page = 1; page <= (results + 24) / 25; ++page) {
-			std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
-			std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
-			SSL* ssl{};
-			BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, (char*)&ssl);
-			SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, NULL);
-			BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, (char*)"api.jikan.moe:https");
-			std::stringstream request;
-			request << "GET /v4/" << classless << "?q=\"" << replace(name, ' ', "%20") << "\"&limit=" << ((results < 25) ? results : 25) << "&page=" << page << " HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n";
-			BIO_puts(bio.get(), request.str().c_str());
-			std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
-			all_data->reserve(2048);
-			std::unique_ptr<char[]> temp = std::make_unique<char[]>(2048);
-			bool once{};
-			int r{};
-			while ((r = BIO_read(bio.get(), temp.get(), sizeof(temp) - 1)) > 0) {
-				temp[r] = '\0';
+		request([&](bio_callback bio) {
+			for (short page = 1; page <= (results + 24) / 25; ++page) {
+				std::stringstream request{};
+				request << "GET /v4/" << classless << "?q=\"" << replace(name, ' ', "%20") << "\"&limit=" << ((results < 25) ? results : 25) << "&page=" << page << " HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n";
+				BIO_puts(bio.get(), request.str().c_str());
+				std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
+				all_data->reserve(2048);
+				std::unique_ptr<char[]> data = std::make_unique<char[]>(2048);
+				bool once{};
+				int r{};
+				while ((r = BIO_read(bio.get(), data.get(), sizeof(data) - 1)) > 0) {
+					data[r] = static_cast<char>(0);
 
-				if (not once) {
-					all_data->append(temp.get());
-					if (all_data->find("\r\n\r\n") not_eq -1) {
-						all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
-						once = true;
+					if (not once) {
+						all_data->append(data.get());
+						if (all_data->find("\r\n\r\n") not_eq -1) {
+							all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
+							once = true;
+						}
 					}
+					else
+						all_data->append(data.get());
 				}
-				else
-					all_data->append(temp.get());
+				all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + sizeof("\n"))));
+				std::unique_ptr<nlohmann::json> j = std::make_unique<nlohmann::json>();
+				if (nlohmann::json::accept(*all_data))
+					*j = nlohmann::json(nlohmann::json::parse(*all_data));
+				all_data->clear();
+				if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
+				for (const nlohmann::json& data : (*j)["data"])
+					callback(T(data));
 			}
-			all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + 2)));
-			std::unique_ptr<nlohmann::json> j = std::make_unique<nlohmann::json>();
-			if (nlohmann::json::accept(*all_data))
-				*j = nlohmann::json(nlohmann::json::parse(*all_data));
-			all_data->clear();
-			if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
-			for (const nlohmann::json& data : (*j)["data"])
-				callback(T(data));
-		}
-		OPENSSL_cleanup();
+			});
 	}
 }
