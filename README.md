@@ -23,6 +23,13 @@ mal::search<mal::manga>("one piece", 5, [](auto manga) {
 });
 ```
 
+get website/API response time in seconds.
+```C++
+double palse = mal::api_palse();
+...
+```
+
+
 
 > **NOTE**: this is blocked code- meaning following code will be paused until this function finishes.
 
