@@ -5,6 +5,8 @@
 #include <openssl/bio.h>
 #include <nlohmann/json.hpp>
 
+using json = nlohmann::json;
+
 std::string replace(const std::string& str, char replace, const std::string& with) noexcept {
 	std::stringstream mstr{};
 	for (const char& c : str)
@@ -56,7 +58,7 @@ namespace mal {
 		std::string synopsis{}; /* about the anime. */
 		std::string background{}; /* about the production. */
 
-		explicit anime(const nlohmann::json& j) noexcept {
+		explicit anime(const json& j) noexcept {
 			this->mal_id = is_null<short>(j["mal_id"]);
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
 				this->image.push_back(is_null<std::string>(j["images"]["jpg"][size]));
@@ -107,7 +109,7 @@ namespace mal {
 		int favorites{}; /* total favorites. */
 		std::string synopsis{}; /* about the manga. */
 		std::string background{}; /* about the production. */
-		explicit manga(const nlohmann::json& j) noexcept {
+		explicit manga(const json& j) noexcept {
 			this->mal_id = is_null<int>(j["mal_id"]);
 			for (const char* const& size : { "image_url", "small_image_url", "large_image_url" })
 				this->image.push_back(is_null<std::string>(j["images"]["jpg"][size]));
@@ -138,9 +140,9 @@ namespace mal {
 		std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
 		std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
 		SSL* ssl{};
-		BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, (char*)&ssl);
-		SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, NULL);
-		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, (char*)"api.jikan.moe:https");
+		BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, reinterpret_cast<char*>(&ssl));
+		SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, nullptr);
+		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, const_cast<char*>("api.jikan.moe:https"));
 		callback(bio);
 	}
 
@@ -148,7 +150,7 @@ namespace mal {
 	 * @return response time in seconds
 	*/
 	double api_palse() {
-		std::chrono::steady_clock::time_point end;
+		std::chrono::steady_clock::time_point end{};
 		std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
 		request([&start, &end](bio_callback bio) {
 			BIO_puts(bio.get(), "GET /v4/ HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n");
@@ -194,12 +196,12 @@ namespace mal {
 						all_data->append(data.get());
 				}
 				all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + sizeof("\n"))));
-				std::unique_ptr<nlohmann::json> j = std::make_unique<nlohmann::json>();
-				if (nlohmann::json::accept(*all_data))
-					*j = nlohmann::json(nlohmann::json::parse(*all_data));
+				std::unique_ptr<json> j = std::make_unique<json>();
+				if (json::accept(*all_data))
+					*j = json(json::parse(*all_data));
 				all_data->clear();
 				if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
-				for (const nlohmann::json& data : (*j)["data"])
+				for (const json& data : (*j)["data"])
 					callback(T(data));
 			}
 			});
