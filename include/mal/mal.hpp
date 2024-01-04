@@ -7,19 +7,34 @@
 
 using json = nlohmann::json;
 
-std::string replace(const std::string& str, char replace, const std::string& with) noexcept {
-	std::stringstream mstr{};
-	for (const char& c : str)
-		(c == replace) ? mstr << with : mstr << c;
-	return std::move(mstr.str());
+namespace mal_dev {
+	std::string replace(const std::string& str, char replace, const std::string& with) noexcept {
+		std::stringstream mstr{};
+		for (const char& c : str)
+			(c == replace) ? mstr << with : mstr << c;
+		return std::move(mstr.str());
+	}
+
+	template<typename T> T is_null(const nlohmann::json& j) noexcept {
+		if (j.is_null()) return {};
+		return j.get<T>();
+	}
+
+	using bio_callback = std::unique_ptr<BIO, decltype(&::BIO_free_all)>&;
+
+	void request(std::function<void(bio_callback)> callback) {
+		std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
+		std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
+		ssl_st* ssl{};
+		BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, reinterpret_cast<char*>(&ssl));
+		SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, nullptr);
+		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, const_cast<char*>("api.jikan.moe:https"));
+		callback(bio);
+	}
 }
 
-template<typename T> T is_null(const nlohmann::json& j) noexcept {
-	if (j.is_null()) return {};
-	return j.get<T>();
-}
-
-using bio_callback = std::unique_ptr<BIO, decltype(&::BIO_free_all)>&;
+#pragma once
+using namespace mal_dev;
 
 namespace mal {
 	enum image_size {
@@ -135,17 +150,6 @@ namespace mal {
 		constexpr ~manga() = default;
 	};
 
-	/* no handshake nor connection */
-	void request(std::function<void(bio_callback)> callback) {
-		std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
-		std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
-		ssl_st* ssl{};
-		BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, reinterpret_cast<char*>(&ssl));
-		SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, nullptr);
-		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, const_cast<char*>("api.jikan.moe:https"));
-		callback(bio);
-	}
-
 	/* API response time. via /v4/...
 	 * @return response time in seconds
 	*/
@@ -176,16 +180,16 @@ namespace mal {
 				);
 				std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
 				all_data->reserve(2048);
-				std::unique_ptr<char[]> data = std::make_unique<char[]>(2048);
-				bool once{};
-				int r{};
-				while ((r = BIO_read(bio.get(), data.get(), sizeof(data) - 1)) > 0) {
-					data[r] = static_cast<char>(0);
-
-					all_data->append(data.get());
-					if (not once and all_data->find("\r\n\r\n") not_eq -1) {
-						all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
-						once = true;
+				{
+					std::unique_ptr<bool> once = std::make_unique<bool>(false);
+					std::unique_ptr<char[]> data = std::make_unique<char[]>(2048);
+					for (int r = BIO_read(bio.get(), data.get(), sizeof(data) - 1); r > 0; r = BIO_read(bio.get(), data.get(), sizeof(data) - 1)) {
+						data[r] = static_cast<char>(0);
+						all_data->append(data.get());
+						if (not *once and all_data->find("\r\n\r\n") not_eq -1) {
+							all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
+							once.reset(new bool(true));
+						}
 					}
 				}
 				all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + sizeof("\n"))));
