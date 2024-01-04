@@ -19,7 +19,7 @@ template<typename T> T is_null(const nlohmann::json& j) noexcept {
 	return j.get<T>();
 }
 
-using bio_callback = std::unique_ptr<BIO, decltype(&::BIO_free_all)>&; // fluent coding
+using bio_callback = std::unique_ptr<BIO, decltype(&::BIO_free_all)>&;
 
 namespace mal {
 	enum image_size {
@@ -29,7 +29,7 @@ namespace mal {
 	};
 
 	enum type {
-		t_null, /* none mentioned */
+		t_null,
 		t_tv, /* anime series */
 		t_special, /* anime special */
 		t_ona, /* Original Net Animation */
@@ -139,7 +139,7 @@ namespace mal {
 	void request(std::function<void(bio_callback)> callback) {
 		std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
 		std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
-		SSL* ssl{};
+		ssl_st* ssl{};
 		BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, reinterpret_cast<char*>(&ssl));
 		SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, nullptr);
 		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, const_cast<char*>("api.jikan.moe:https"));
@@ -167,16 +167,13 @@ namespace mal {
 	*/
 	template<typename T, typename string_Type>
 	void search(const string_Type& name, const short& results, std::function<void(const T&)> callback) {
-		if (results > SHRT_MAX) return;
-		std::string classless{ typeid(T).name() };
-		if (classless.find("anime") not_eq -1) classless = "anime";
-		else if (classless.find("manga") not_eq -1) classless = "manga";
-		else return;
+		if (results > 32767) return;
 		request([&](bio_callback bio) {
 			for (short page = 1; page <= (results + 24) / 25; ++page) {
-				std::stringstream request{};
-				request << "GET /v4/" << classless << "?q=\"" << replace(name, ' ', "%20") << "\"&limit=" << ((results < 25) ? results : 25) << "&page=" << page << " HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n";
-				BIO_puts(bio.get(), request.str().c_str());
+				BIO_puts(bio.get(),
+					std::format("GET /v4/{0}?q=\"{1}\"&limit={2}&page={3} HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n",
+						std::string(typeid(T).name()).substr(sizeof("class mal::") - 1, sizeof(typeid(T).name())), replace(name, ' ', "%20"), ((results < 25) ? results : 25), page).c_str()
+				);
 				std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
 				all_data->reserve(2048);
 				std::unique_ptr<char[]> data = std::make_unique<char[]>(2048);
@@ -185,15 +182,11 @@ namespace mal {
 				while ((r = BIO_read(bio.get(), data.get(), sizeof(data) - 1)) > 0) {
 					data[r] = static_cast<char>(0);
 
-					if (not once) {
-						all_data->append(data.get());
-						if (all_data->find("\r\n\r\n") not_eq -1) {
-							all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
-							once = true;
-						}
+					all_data->append(data.get());
+					if (not once and all_data->find("\r\n\r\n") not_eq -1) {
+						all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
+						once = true;
 					}
-					else
-						all_data->append(data.get());
 				}
 				all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + sizeof("\n"))));
 				std::unique_ptr<json> j = std::make_unique<json>();
