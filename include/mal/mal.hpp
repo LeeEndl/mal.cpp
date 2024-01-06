@@ -1,3 +1,4 @@
+#pragma once
 #pragma comment(lib, "./include/openssl/libcrypto.lib")
 #pragma comment(lib, "./include/openssl/libssl.lib")
 
@@ -7,39 +8,33 @@
 
 using json = nlohmann::json;
 
-namespace mal_dev {
-	std::string replace(const std::string& str, char replace, const std::string& with) noexcept {
-		std::stringstream mstr{};
-		for (const char& c : str)
-			(c == replace) ? mstr << with : mstr << c;
-		return std::move(mstr.str());
-	}
-
-	template<typename T> T is_null(const nlohmann::json& j) noexcept {
-		if (j.is_null()) return {};
-		return j.get<T>();
-	}
-
-	using bio_callback = std::unique_ptr<BIO, decltype(&::BIO_free_all)>&;
-
-	void request(std::function<void(bio_callback)> callback) {
-		std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
-		std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
-		ssl_st* ssl{};
-		BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, reinterpret_cast<char*>(&ssl));
-		SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, nullptr);
-		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, const_cast<char*>("api.jikan.moe:https"));
-		callback(bio);
-	}
-
-	template<typename string_Type>
-	std::string webpage(string_Type dir, const char* ssl_extra = "Connection: Close\r\n") {
-		return std::format("GET {0} HTTP/1.1\r\nHost: api.jikan.moe\r\n{1}\r\n", dir, ssl_extra);
-	}
+std::string replace(const std::string_view& str, char replace, const std::string& with) noexcept {
+	std::stringstream mstr{};
+	for (const char& c : str)
+		(c == replace) ? mstr << with : mstr << c;
+	return std::move(mstr.str());
 }
 
-#pragma once
-using namespace mal_dev;
+template<typename T> T is_null(const nlohmann::json& j) noexcept {
+	if (j.is_null()) return {};
+	return j.get<T>();
+}
+
+using bio_callback = std::unique_ptr<BIO, decltype(&::BIO_free_all)>&;
+
+void request(std::function<void(bio_callback)> callback) {
+	std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)> ctx{ SSL_CTX_new(TLS_client_method()), ::SSL_CTX_free };
+	std::unique_ptr<BIO, decltype(&::BIO_free_all)> bio{ BIO_new_ssl_connect(ctx.get()), ::BIO_free_all };
+	ssl_st* ssl{};
+	BIO_ctrl(bio.get(), BIO_C_GET_SSL, 0L, reinterpret_cast<char*>(&ssl));
+	SSL_ctrl(ssl, SSL_CTRL_MODE, SSL_MODE_AUTO_RETRY, nullptr);
+	BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, const_cast<char*>("api.jikan.moe:https"));
+	callback(bio);
+}
+
+std::string webpage(const std::string_view& dir, const char* ssl_extra = "Connection: Close\r\n") {
+	return std::format("GET {0} HTTP/1.1\r\nHost: api.jikan.moe\r\n{1}\r\n", dir, ssl_extra);
+}
 
 namespace mal {
 	enum image_size {
@@ -172,9 +167,8 @@ namespace mal {
 	 * @param results the number of results. this is useful for getting a whole series collection
 	 * @param callback used to get all results once function is done
 	*/
-	template<typename T, typename string_Type>
-	void search(const string_Type& name, const short& results, std::function<void(const T&)> callback) {
-		if (results > 32767) return;
+	template<typename T>
+	void search(const std::string_view& name, const short& results, std::function<void(const T&)> callback) {
 		request([&](bio_callback bio) {
 			for (short page = 1; page <= (results + 24) / 25; ++page) {
 				BIO_puts(bio.get(),
@@ -182,25 +176,26 @@ namespace mal {
 						"/v4/{0}?q=\"{1}\"&limit={2}&page={3}",
 						std::string(typeid(T).name()).substr(sizeof("class mal::") - 1, sizeof(typeid(T).name())), replace(name, ' ', "%20"), ((results < 25) ? results : 25), page)).c_str()
 				);
-				std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
-				all_data->reserve(2048);
-				{
-					std::unique_ptr<bool> once = std::make_unique<bool>(false);
-					std::unique_ptr<char[]> data = std::make_unique<char[]>(2048);
-					for (int r = BIO_read(bio.get(), data.get(), sizeof(data) - 1); r > 0; r = BIO_read(bio.get(), data.get(), sizeof(data) - 1)) {
-						data[r] = static_cast<char>(0);
-						all_data->append(data.get());
-						if (not *once and all_data->find("\r\n\r\n") not_eq -1) {
-							all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
-							once.reset(new bool(true));
-						}
-					}
-				}
-				all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + sizeof("\n"))));
 				std::unique_ptr<json> j = std::make_unique<json>();
-				if (json::accept(*all_data))
-					*j = json(json::parse(*all_data));
-				all_data->clear();
+				{
+					std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
+					all_data->reserve(2048);
+					{
+						std::unique_ptr<bool> once = std::make_unique<bool>(false);
+						std::unique_ptr<char[]> data = std::make_unique<char[]>(2048);
+						for (int r = BIO_read(bio.get(), data.get(), sizeof(data) - 1); r > 0; r = BIO_read(bio.get(), data.get(), sizeof(data) - 1)) {
+							data[r] = static_cast<char>(0);
+							all_data->append(data.get());
+							if (not *once and all_data->find("\r\n\r\n") not_eq -1) {
+								all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
+								once.reset(new bool(true));
+							}
+						}
+					} // cleanup
+					all_data = std::make_unique<std::string>(all_data->substr(5, all_data->size() - (sizeof("\r\n\r\n") * 2 + sizeof("\n"))));
+					if (json::accept(*all_data))
+						*j = json(json::parse(*all_data));
+				} // cleanup
 				if (is_null<int>((*j)["pagination"]["items"]["count"]) == 0) break;
 				for (const json& data : (*j)["data"])
 					callback(T(data));
