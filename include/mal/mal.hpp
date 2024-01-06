@@ -31,6 +31,11 @@ namespace mal_dev {
 		BIO_ctrl(bio.get(), BIO_C_SET_CONNECT, 0L, const_cast<char*>("api.jikan.moe:https"));
 		callback(bio);
 	}
+
+	template<typename string_Type>
+	std::string webpage(string_Type dir, const char* ssl_extra = "Connection: Close\r\n") {
+		return std::format("GET {0} HTTP/1.1\r\nHost: api.jikan.moe\r\n{1}\r\n", dir, ssl_extra);
+	}
 }
 
 #pragma once
@@ -154,13 +159,11 @@ namespace mal {
 	 * @return response time in seconds
 	*/
 	double api_palse() {
-		std::chrono::steady_clock::time_point end{};
 		std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
-		request([&start, &end](bio_callback bio) {
-			BIO_puts(bio.get(), "GET /v4/ HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n");
-			end = std::chrono::high_resolution_clock::now();
+		request([&start](bio_callback bio) {
+			BIO_puts(bio.get(), webpage("/v4/").c_str());
 			});
-		return std::chrono::duration<double>(end - start).count();
+		return std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
 	}
 
 	/* a basic GET search on http://myanimelist.net/
@@ -175,8 +178,9 @@ namespace mal {
 		request([&](bio_callback bio) {
 			for (short page = 1; page <= (results + 24) / 25; ++page) {
 				BIO_puts(bio.get(),
-					std::format("GET /v4/{0}?q=\"{1}\"&limit={2}&page={3} HTTP/1.1\r\nHost: api.jikan.moe\r\nConnection: Close\r\n\r\n",
-						std::string(typeid(T).name()).substr(sizeof("class mal::") - 1, sizeof(typeid(T).name())), replace(name, ' ', "%20"), ((results < 25) ? results : 25), page).c_str()
+					webpage(std::format(
+						"/v4/{0}?q=\"{1}\"&limit={2}&page={3}",
+						std::string(typeid(T).name()).substr(sizeof("class mal::") - 1, sizeof(typeid(T).name())), replace(name, ' ', "%20"), ((results < 25) ? results : 25), page)).c_str()
 				);
 				std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
 				all_data->reserve(2048);
