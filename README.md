@@ -11,14 +11,14 @@
 this function is used to GET anime/s then individually stored in `anime`. this ultimately makes it easier to access.
  
 ```C++
-mal::search<mal::anime>("one piece", 5, [](auto anime) {
+mal::search<anime>("one piece", 5, [](auto i) {
 	...
 });
 ```
 
 manga...
 ```C++
-mal::search<mal::manga>("one piece", 5, [](auto manga) {
+mal::search<manga>("one piece", 5, [](auto i) {
 	...
 });
 ```
