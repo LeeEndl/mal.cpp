@@ -164,37 +164,41 @@ namespace mal {
 	*/
 	template<typename T>
 	void search(const std::string_view& name, const short& results, std::function<void(const T&)> callback) {
-		request([&](bio_callback bio) {
-			for (short page = 1; page <= (results + 24) / 25; ++page) {
+		short i_results{};
+		for (short page = 1; page <= (results + 24) / 25; ++page) {
+			std::unique_ptr<json> j = std::make_unique<json>();
+			request([&](bio_callback bio) {
 				BIO_puts(bio.get(),
-					webpage(std::format(
-						"/v4/{0}?q=\"{1}\"&limit={2}&page={3}",
-						std::string(typeid(T).name()).substr(sizeof("class ") - 1, sizeof(typeid(T).name())), replace(name, ' ', "%20"), ((results < 25) ? results : 25), page)).c_str()
+				webpage(std::format(
+					"/v4/{0}?q=\"{1}\"&limit={2}&page={3}",
+					std::string(typeid(T).name()).substr(sizeof("class ") - 1, sizeof(typeid(T).name())), replace(name, ' ', "%20"), 25, page)).c_str()
 				);
-				std::unique_ptr<json> j = std::make_unique<json>();
+			{
+				std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
 				{
-					std::unique_ptr<std::string> all_data = std::make_unique<std::string>();
-					{
-						std::unique_ptr<bool> once = std::make_unique<bool>(false);
-						std::unique_ptr<char[]> data = std::make_unique<char[]>(INT_MAX);
-						for (int r = BIO_read(bio.get(), data.get(), INT_MAX); r > 0; r = BIO_read(bio.get(), data.get(), INT_MAX)) {
-							data[r] = static_cast<char>(0);
-							all_data->append(data.get());
-							if (not *once and all_data->find("\r\n\r\n") not_eq -1) {
-								all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
-								once.reset(new bool(true));
-							}
+					std::unique_ptr<bool> once = std::make_unique<bool>(false);
+					std::unique_ptr<char[]> data = std::make_unique<char[]>(INT_MAX);
+					for (int r = BIO_read(bio.get(), data.get(), INT_MAX); r > 0; r = BIO_read(bio.get(), data.get(), INT_MAX)) {
+						data[r] = static_cast<char>(0);
+						all_data->append(data.get());
+						if (not *once and all_data->find("\r\n\r\n") not_eq -1) {
+							all_data = std::make_unique<std::string>(all_data->substr(all_data->find("\r\n\r\n") + 4));
+							once.reset(new bool(true));
 						}
-						std::erase_if(*all_data, [](char c) { return not std::isprint(c); });
-					} // cleanup
-					all_data = std::make_unique<std::string>(all_data->substr(sizeof "\n\r\n", all_data->size() - sizeof "\n\r\n0"));
-					if (json::accept(*all_data))
-						*j = json(json::parse(*all_data));
-				} // cleanup
-				if (is_null<bool>((*j)["pagination"]["has_next_page"]) == false) break;
-				for (const json& data : (*j)["data"])
-					callback(T(data));
+					}
+					std::erase_if(*all_data, [](const char& c) { return not std::isprint(c); });
+				}
+				all_data = std::make_unique<std::string>(all_data->substr(sizeof "\n\r\n", all_data->size() - sizeof "\n\r\n0"));
+				if (json::accept(*all_data))
+					*j = json(json::parse(*all_data));
 			}
-			});
+				});
+			if ((*j)["data"].is_null()) break;
+			for (const json& data : (*j)["data"]) {
+				i_results++;
+				if (i_results > results) break;
+				callback(T(data));
+			}
+		}
 	}
 }
